@@ -21,7 +21,7 @@ namespace Invoicing.Base.Ddd
 
         protected abstract IEnumerable<object> GetAtomicValues();
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null || obj.GetType() != GetType())
             {
@@ -53,7 +53,7 @@ namespace Invoicing.Base.Ddd
 
         public ValueObject GetCopy()
         {
-            return this.MemberwiseClone() as ValueObject;
+            return (ValueObject) this.MemberwiseClone();
         }
     }
 }

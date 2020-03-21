@@ -13,7 +13,7 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
         public Address BillingAddress { get; private set; }
         public Address ShippingAddress { get; private set; }
 
-        private Customer()
+        private Customer() : this("", "", "", "", "", "")
         {
         }
 

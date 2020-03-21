@@ -10,7 +10,7 @@ namespace Invoicing.Customers.Infrastructure
     public class CustomerDbContext : DbContext, IUnitOfWork
     {
         public const string Schema = "Customer";
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Customer> Customers { get; set; } = null!;
 
         public CustomerDbContext(DbContextOptions<CustomerDbContext> dbContextOptions) : base(dbContextOptions)
         {

@@ -12,7 +12,9 @@ namespace Invoicing.Base.Ddd
         public int Id { get; private set; }
 
         protected Enumeration()
-        { }
+        { 
+            Name = string.Empty;
+        }
 
         protected Enumeration(int id, string name)
         {
@@ -29,14 +31,14 @@ namespace Invoicing.Base.Ddd
             return fields.Select(f => f.GetValue(null)).Cast<T>();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var otherValue = obj as Enumeration;
 
             if (otherValue == null)
                 return false;
 
-            var typeMatches = GetType().Equals(obj.GetType());
+            var typeMatches = GetType().Equals(obj?.GetType());
             var valueMatches = Id.Equals(otherValue.Id);
 
             return typeMatches && valueMatches;

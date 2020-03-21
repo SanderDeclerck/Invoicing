@@ -14,10 +14,14 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
         public string City { get; private set; }
         public string PostalCode { get; private set; }
         public string IsoCountryCode { get; private set; }
-        public Country Country => Country.List.FirstOrDefault(c => c.ThreeLetterCode == IsoCountryCode);
+        public Country? Country => Country.List.FirstOrDefault(c => c.ThreeLetterCode == IsoCountryCode);
 
         private Address()
         {
+            Street = "";
+            City = "";
+            PostalCode = "";
+            IsoCountryCode = "";
         }
 
         public Address(string street, string city, string postalCode, string isoCountryCode)
