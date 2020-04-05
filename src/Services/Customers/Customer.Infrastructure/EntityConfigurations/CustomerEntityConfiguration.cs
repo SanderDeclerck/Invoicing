@@ -11,8 +11,7 @@ namespace Invoicing.Customers.Infrastructure.EntityConfigurations
         {
             builder.ToTable("Customer", CustomerDbContext.Schema);
 
-            builder.OwnsOne(c => c.BillingAddress, addressBuilder => addressBuilder.Ignore(a => a.Country));
-            builder.OwnsOne(c => c.ShippingAddress, addressBuilder => addressBuilder.Ignore(a => a.Country));
+            builder.OwnsOne(c => c.BillingAddress, addressBuilder => addressBuilder.Ignore(a => a!.Country));
         }
     }
 }

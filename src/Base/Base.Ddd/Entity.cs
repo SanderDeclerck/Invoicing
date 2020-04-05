@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
+﻿
 namespace Invoicing.Base.Ddd
 {
     public abstract class Entity
