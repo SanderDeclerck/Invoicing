@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Set up: check out code"
+      - name: "Set up: Check out code"
         uses: actions/checkout@v2
-      - name: "Set up: .NET Core"
+      - name: "Set up: Install dotnet core"
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100-preview.1
