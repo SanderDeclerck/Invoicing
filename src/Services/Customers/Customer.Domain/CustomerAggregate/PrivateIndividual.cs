@@ -7,7 +7,7 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
         public string FirstName { get; }
         public string LastName { get; }
 
-        public PrivateIndividual(string firstName, string lastName, string countryCode) : base(countryCode)
+        public PrivateIndividual(string firstName, string lastName)
         {
             FirstName = firstName;
             LastName = lastName;

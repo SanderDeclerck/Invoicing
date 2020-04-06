@@ -9,15 +9,9 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
     {
         public string? PhoneNumber { get; private set; }
         public string? EmailAddress { get; private set; }
-        public string CountryCode { get; private set; }
         public Address? BillingAddress { get; private set; }
         public abstract bool IsCompany { get; }
         public abstract string Name { get; }
-
-        public Customer(string countryCode)
-        {
-            CountryCode = countryCode;
-        }
 
         public virtual void SetPhoneNumber(string phoneNumber)
         {

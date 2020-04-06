@@ -14,14 +14,12 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var companyName = _faker.Company.CompanyName();
             var vatId = "BE0123.456.789";
-            var countryCode = "BEL";
 
-            var customer = new Company(companyName, vatId, countryCode);
+            var customer = new Company(companyName, vatId);
 
             Assert.Equal(companyName, customer.CompanyName);
             Assert.Equal(companyName, customer.Name);
             Assert.Equal(vatId, customer.VatNumber);
-            Assert.Equal(countryCode, customer.CountryCode);
             Assert.True(customer.IsCompany);
 
             Assert.Null(customer.BillingAddress);
@@ -34,14 +32,12 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var firstName = _faker.Person.FirstName;
             var lastName = _faker.Person.LastName;
-            var countryCode = "BEL";
 
-            var customer = new PrivateIndividual(firstName, lastName, countryCode);
+            var customer = new PrivateIndividual(firstName, lastName);
 
             Assert.Equal(firstName, customer.FirstName);
             Assert.Equal(lastName, customer.LastName);
             Assert.Equal($"{firstName} {lastName}", customer.Name);
-            Assert.Equal(countryCode, customer.CountryCode);
             Assert.False(customer.IsCompany);
 
             Assert.Null(customer.BillingAddress);
@@ -54,8 +50,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var companyName = _faker.Company.CompanyName();
             var vatId = "BE0123.456.789";
-            var countryCode = "BEL";
-            var customer = new Company(companyName, vatId, countryCode);
+            var customer = new Company(companyName, vatId);
 
             var address = new Address(_faker.Address.StreetAddress(), _faker.Address.City(), _faker.Address.ZipCode(), "BEL");
             customer.SetBillingAddress(address);
@@ -68,8 +63,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var firstName = _faker.Person.FirstName;
             var lastName = _faker.Person.LastName;
-            var countryCode = "BEL";
-            var customer = new PrivateIndividual(firstName, lastName, countryCode);
+            var customer = new PrivateIndividual(firstName, lastName);
 
             var address = new Address(_faker.Address.StreetAddress(), _faker.Address.City(), _faker.Address.ZipCode(), "BEL");
             customer.SetBillingAddress(address);
@@ -82,8 +76,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var companyName = _faker.Company.CompanyName();
             var vatId = "BE0123.456.789";
-            var countryCode = "BEL";
-            var customer = new Company(companyName, vatId, countryCode);
+            var customer = new Company(companyName, vatId);
             var number = _faker.Phone.PhoneNumber();
 
             customer.SetPhoneNumber(number);
@@ -96,8 +89,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var firstName = _faker.Person.FirstName;
             var lastName = _faker.Person.LastName;
-            var countryCode = "BEL";
-            var customer = new PrivateIndividual(firstName, lastName, countryCode);
+            var customer = new PrivateIndividual(firstName, lastName);
             var number = _faker.Phone.PhoneNumber();
 
             customer.SetPhoneNumber(number);
@@ -110,8 +102,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var companyName = _faker.Company.CompanyName();
             var vatId = "BE0123.456.789";
-            var countryCode = "BEL";
-            var customer = new Company(companyName, vatId, countryCode);
+            var customer = new Company(companyName, vatId);
             var email = _faker.Person.Email;
 
             customer.SetEmailAddress(email);
@@ -124,8 +115,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var firstName = _faker.Person.FirstName;
             var lastName = _faker.Person.LastName;
-            var countryCode = "BEL";
-            var customer = new PrivateIndividual(firstName, lastName, countryCode);
+            var customer = new PrivateIndividual(firstName, lastName);
             var email = _faker.Person.Email;
 
             customer.SetEmailAddress(email);
@@ -138,8 +128,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var companyName = _faker.Company.CompanyName();
             var vatId = "BE0123.456.789";
-            var countryCode = "BEL";
-            var customer = new Company(companyName, vatId, countryCode);
+            var customer = new Company(companyName, vatId);
 
             var ex = Assert.ThrowsAny<CustomerInvalidEmailException>(() => customer.SetEmailAddress("blah.be"));
         }
@@ -149,8 +138,7 @@ namespace Invoicing.Customers.UnitTests.Domain
         {
             var firstName = _faker.Person.FirstName;
             var lastName = _faker.Person.LastName;
-            var countryCode = "BEL";
-            var customer = new PrivateIndividual(firstName, lastName, countryCode);
+            var customer = new PrivateIndividual(firstName, lastName);
             var email = _faker.Person.Email;
 
             var ex = Assert.ThrowsAny<CustomerInvalidEmailException>(() => customer.SetEmailAddress("blah.be"));

@@ -7,8 +7,7 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
         public string CompanyName { get; }
         public string VatNumber { get; }
 
-        public Company(string companyName, string vatNumber, string countryCode)
-            : base(countryCode)
+        public Company(string companyName, string vatNumber)
         {
             CompanyName = companyName;
             VatNumber = vatNumber;
