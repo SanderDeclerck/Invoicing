@@ -1,0 +1,70 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Start Test Client",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build solution",
+      "program": "${workspaceFolder}/src/Web/Invoicing.TestClient/bin/Debug/netcoreapp5.0/Invoicing.TestClient.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Web/Invoicing.TestClient",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/src/Web/Invoicing.TestClient/Views"
+      }
+    },
+    {
+      "name": "Start Identity.Service",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build solution",
+      "program": "${workspaceFolder}/src/Services/Identity/Identity.Service/bin/Debug/netcoreapp5.0/Identity.Service.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Services/Identity/Identity.Service",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/src/Web/Invoicing.TestClient/Views"
+      }
+    },
+    {
+      "name": "Start Customer.Service",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build solution",
+      "program": "${workspaceFolder}/src/Services/Customers/Customer.Api/bin/Debug/netcoreapp5.0/Customer.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Services/Customers/Customer.Api",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/src/Services/Customers/Customer.Api/Views"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "All",
+      "configurations": [
+        "Start Identity.Service",
+        "Start Test Client",
+        "Start Customer.Service"
+      ]
+    }
+  ]
+}
