@@ -1,39 +1,52 @@
-﻿using Invoicing.Base.Ddd;
 using System.Threading.Tasks;
+using Invoicing.Base.Ddd;
+using Invoicing.Customers.Infrastructure.Data;
 using Invoicing.Customers.Domain.CustomerAggregate;
+using MongoDB.Driver;
+using Base.Infrastructure;
+using Microsoft.AspNetCore.Http;
 
 namespace Invoicing.Customers.Infrastructure.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : TenantRepository<Customer>, ICustomerRepository
     {
-        private readonly CustomerDbContext _customerDbContext;
-        public IUnitOfWork UnitOfWork => _customerDbContext;
+        private readonly ICustomerMongoContext _customerMongoContext;
 
-        public CustomerRepository(CustomerDbContext customerDbContext)
+        public CustomerRepository(ICustomerMongoContext customerMongoContext, IHttpContextAccessor httpContextAccessor)
+            : base(httpContextAccessor)
         {
-            _customerDbContext = customerDbContext;
+            _customerMongoContext = customerMongoContext;
         }
 
-        public Customer Add(Customer customer)
-        {
-            if (customer.IsTransient())
-            {
-                customer = _customerDbContext.Customers.Add(customer).Entity;
-            }
+        public override IUnitOfWork UnitOfWork => _customerMongoContext;
 
+        public async Task<Customer> AddAsync(Customer customer)
+        {
+            await _customerMongoContext.GetCustomerCollection().InsertOneAsync(GetEntity(customer));
             return customer;
         }
 
-        public Customer Update(Customer customer)
+        public async Task<Customer?> GetAsync(string customerId)
         {
-            return _customerDbContext.Customers.Update(customer).Entity;
+            var customer = (await _customerMongoContext.GetCustomerCollection()
+                                                       .FindAsync<TenantEntity<Customer>>(CreateCustomerByIdFilter(customerId)))
+                                                       .FirstOrDefault();
+            return customer?.Entity;
         }
 
-        public Task<Customer> GetAsync(int customerId)
+        public async Task<Customer> UpdateAsync(Customer customer)
         {
-            var customer = _customerDbContext.Customers.Find(customerId);
+            await _customerMongoContext.GetCustomerCollection()
+                                       .ReplaceOneAsync(CreateCustomerByIdFilter(customer.Id),
+                                                        GetEntity(customer));
+            return customer;
+        }
 
-            return Task.FromResult(customer);
+        private FilterDefinition<TenantEntity<Customer>> CreateCustomerByIdFilter(string customerId)
+        {
+            return Builders<TenantEntity<Customer>>.Filter.And(
+                        Builders<TenantEntity<Customer>>.Filter.Eq(c => c.Entity.Id, customerId),
+                        Builders<TenantEntity<Customer>>.Filter.Eq(c => c.TenantId, TenantId));
         }
     }
 }

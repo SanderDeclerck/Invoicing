@@ -8,10 +8,10 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
 {
     public class Address : ValueObject
     {
-        public string Street { get; private set; }
-        public string City { get; private set; }
-        public string PostalCode { get; private set; }
-        public string IsoCountryCode { get; private set; }
+        public string Street { get; }
+        public string City { get; }
+        public string PostalCode { get; }
+        public string IsoCountryCode { get; }
         public Country? Country => Country.List.FirstOrDefault(c => c.ThreeLetterCode == IsoCountryCode);
 
         public Address(string street, string city, string postalCode, string isoCountryCode)

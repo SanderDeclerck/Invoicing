@@ -5,8 +5,8 @@ namespace Invoicing.Customers.Domain.CustomerAggregate
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
-        Customer Add(Customer customer);
-        Customer Update(Customer customer);
-        Task<Customer> GetAsync(int customerId);
+        Task<Customer> AddAsync(Customer customer);
+        Task<Customer> UpdateAsync(Customer customer);
+        Task<Customer?> GetAsync(string customerId);
     }
 }

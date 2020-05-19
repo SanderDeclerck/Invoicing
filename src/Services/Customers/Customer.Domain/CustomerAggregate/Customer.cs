@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using Invoicing.Base.Ddd;
 using Invoicing.Customers.Domain.CustomerAggregate.Exceptions;
 

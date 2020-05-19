@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Base.Infrastructure
 {
-    public abstract class TenantRepository<T> : IRepository<T> where T : IAggregateRoot
+    public abstract class TenantRepository<T> : IRepository<T> where T : Entity, IAggregateRoot
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -15,20 +15,18 @@ namespace Base.Infrastructure
 
         public abstract IUnitOfWork UnitOfWork { get; }
 
-        protected string? TenantId
+        protected string TenantId
         {
             get
             {
                 var user = _httpContextAccessor.HttpContext.User;
-                if (user == null)
-                {
-                    return null;
-                }
 
-                var tenantClaim = user.Claims.FirstOrDefault(claim => claim.Type == "tenant_id");
+                var tenantClaim = user?.Claims.FirstOrDefault(claim => claim.Type == "tenant_id");
 
-                return tenantClaim?.Value ?? null;
+                return tenantClaim?.Value ?? throw new System.Exception("It is not allowed to access tenant-related data when not authenticated to a tenant");
             }
         }
+
+        protected TenantEntity<T> GetEntity(T entity) => new TenantEntity<T>(entity, TenantId);
     }
 }

@@ -46,15 +46,15 @@
 
   function api() {
     userManager.getUser().then(function (user) {
-      var url = "https://localhost:5020/customer";
-
+      
       var xhr = new XMLHttpRequest();
-      xhr.open("GET", url);
+      xhr.open("POST", "https://localhost:5020/customer/company");
       xhr.onload = function () {
         log(xhr.status, JSON.parse(xhr.responseText));
       };
       xhr.setRequestHeader("Authorization", "Bearer " + user.access_token);
-      xhr.send();
+      xhr.setRequestHeader("Content-type", "application/json");
+      xhr.send(JSON.stringify({companyName: "Sd Software Bv", vatNumber: "BE0716.943.826"}));
     });
   }
 

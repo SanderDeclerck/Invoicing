@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Invoicing.Customers.Infrastructure;
+using Microsoft.AspNetCore.Http;
+using MediatR;
+using FluentValidation.AspNetCore;
 
 namespace Customer.Api
 {
@@ -25,7 +22,8 @@ namespace Customer.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
 
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
@@ -42,6 +40,10 @@ namespace Customer.Api
                     options.WithOrigins("https://localhost:5010").AllowAnyHeader().AllowCredentials();
                 });
             });
+            services.AddMediatR(typeof(Startup));
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddCustomersInfrastructure("mongodb://127.0.0.1:27017");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
