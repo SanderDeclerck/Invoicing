@@ -36,6 +36,41 @@
         "reveal": "always"
       },
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "yarn dev invoicing-frontend",
+      "type": "shell",
+      "command": "yarn",
+      "args": [
+        "dev"
+      ],
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/src/Web/invoicing-frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "yarn",
+          "pattern": [
+            {
+              "regexp": "^([^\\\\s].*)\\\\((\\\\d+,\\\\d+)\\\\):\\\\s*(.*)$",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": false,
+            "beginsPattern": "^ready - started server on (.*)$",
+            "endsPattern": "^event - compiled successfully$"
+          }
+        }
+      ]
     }
   ]
 }

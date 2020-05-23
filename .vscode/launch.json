@@ -55,6 +55,15 @@
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/src/Services/Customers/Customer.Api/Views"
       }
+    },
+    {
+      "name": "Start frontend in edge",
+      "type": "edge",
+      "version": "beta",
+      "request": "launch",
+      "url": "http://localhost:3000/",
+      "webRoot": "${workspaceFolder}/src/Web/invoicing-frontend",
+      "preLaunchTask": "yarn dev invoicing-frontend",
     }
   ],
   "compounds": [

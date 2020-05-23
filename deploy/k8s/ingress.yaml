@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: invoicing-web-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "invoicing-tls-issuer"
+spec:
+  tls:
+    - hosts:
+        - invoicing.sdsoftware.be
+      secretName: invoicing-sdsoftware-be-tls
+  rules:
+    - host: invoicing.sdsoftware.be
+      http:
+        paths:
+          - backend:
+              serviceName: invoicing-frontend
+              servicePort: 3000

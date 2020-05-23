@@ -330,3 +330,33 @@ ASALocalRun/
 .mfractor/
 
 /src/InvoiceTemplate
+
+
+# dependencies
+/src/Web/invoicing-frontend/node_modules
+/src/Web/invoicing-frontend/.pnp
+.pnp.js
+
+# testing
+/src/Web/invoicing-frontend/coverage
+
+# next.js
+/src/Web/invoicing-frontend/.next/
+/src/Web/invoicing-frontend/out/
+
+# production
+/src/Web/invoicing-frontend/build
+
+# misc
+.DS_Store
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

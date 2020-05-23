@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoicing-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoicing-frontend
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: invoicing-frontend
+    spec:
+      containers:
+        - name: invoicing-frontend
+          image: invoicing-frontend
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoicing-frontend
+spec:
+  selector:
+    app: invoicing-frontend
+  ports:
+    - port: 3000
