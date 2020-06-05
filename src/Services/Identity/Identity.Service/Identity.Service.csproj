@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>aspnet-Identity.Service-CEB47EE3-CE0F-46E4-833A-67DAA6C3A007</UserSecretsId>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
@@ -12,12 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Data/MigrationScripts/*.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.0-preview.1.20124.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.0-preview.1.20124.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.0-preview.1.20124.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0-preview.2.20120.8" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0-preview.2.20120.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0-preview.2.20120.8" />
+    <PackageReference Include="dbup-postgresql" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

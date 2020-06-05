@@ -9,7 +9,8 @@ spec:
   tls:
     - hosts:
         - invoicing.sdsoftware.be
-      secretName: invoicing-sdsoftware-be-tls
+        - id.invoicing.sdsoftware.be
+      secretName: invoicing-sdsoftware-be-certificate
   rules:
     - host: invoicing.sdsoftware.be
       http:
@@ -17,3 +18,9 @@ spec:
           - backend:
               serviceName: invoicing-frontend
               servicePort: 3000
+    - host: id.invoicing.sdsoftware.be
+      http:
+        paths:
+          - backend:
+              serviceName: invoicing-identityservice
+              servicePort: 80

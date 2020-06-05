@@ -13,6 +13,11 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Build & Push invoicing-identityservice to Docker Hub
+        run: |
+          docker build -t sanderdeclerck/invoicing-identityservice:$(echo $GITHUB_SHA | head -c7) ./src/Services/Identity/Identity.Service
+          docker push sanderdeclerck/invoicing-identityservice:$(echo $GITHUB_SHA | head -c7)
+
       - name: Build & Push invoicing-frontend to Docker Hub
         run: |
           docker build -t sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7) ./src/Web/invoicing-frontend
@@ -40,10 +45,19 @@ jobs:
       - name: Set the correct namespace
         run: kubectl config set-context --current --namespace=$NAMESPACE
 
+      - name: Deploy invoicing-identityservice-data.yaml
+        run: kubectl apply -f ./deploy/k8s/invoicing-identityservice-data.yaml
+
+      - name: Deploy invoicing-identityservice.yaml
+        run: |
+          kubectl apply -f ./deploy/k8s/invoicing-identityservice.yaml
+          kubectl set image deployments/invoicing-identityservice "invoicing-identityservice=sanderdeclerck/invoicing-identityservice:$(echo $GITHUB_SHA | head -c7)"
+          kubectl rollout resume deployments/invoicing-identityservice
+
       - name: Deploy invoicing-frontend.yaml
         run: |
           kubectl apply -f ./deploy/k8s/invoicing-frontend.yaml
-          kubectl set image  deployments/invoicing-frontend "invoicing-frontend=sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7)"
+          kubectl set image deployments/invoicing-frontend "invoicing-frontend=sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7)"
           kubectl rollout resume deployments/invoicing-frontend
 
       - name: Deploy tls-issuer.yaml

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
+using DbUp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Identity.Service.Data;
@@ -24,9 +24,10 @@ namespace Identity.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            MigrateDatabase(connectionString);
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
@@ -79,6 +80,19 @@ namespace Identity.Service
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void MigrateDatabase(string connectionString)
+        {
+            EnsureDatabase.For.PostgresqlDatabase(connectionString);
+
+            var upgrader = DeployChanges.To
+                .PostgresqlDatabase(connectionString)
+                .WithScriptsEmbeddedInAssembly(typeof(Startup).Assembly)
+                .LogToConsole()
+                .Build();
+
+            upgrader.PerformUpgrade();
         }
     }
 }

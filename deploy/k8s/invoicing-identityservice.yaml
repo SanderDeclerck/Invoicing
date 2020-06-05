@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoicing-identityservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoicing-identityservice
+  paused: true
+  template:
+    metadata:
+      labels:
+        app: invoicing-identityservice
+    spec:
+      containers:
+        - name: invoicing-identityservice
+          image: invoicing-identityservice
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: identity-service-config
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoicing-identityservice
+spec:
+  selector:
+    app: invoicing-identityservice
+  ports:
+    - port: 80

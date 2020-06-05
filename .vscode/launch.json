@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "Build solution",
-      "program": "${workspaceFolder}/src/Web/Invoicing.TestClient/bin/Debug/netcoreapp5.0/Invoicing.TestClient.dll",
+      "program": "${workspaceFolder}/src/Web/Invoicing.TestClient/bin/Debug/net5.0/Invoicing.TestClient.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/Web/Invoicing.TestClient",
       "stopAtEntry": false,
@@ -29,7 +29,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "Build solution",
-      "program": "${workspaceFolder}/src/Services/Identity/Identity.Service/bin/Debug/netcoreapp5.0/Identity.Service.dll",
+      "program": "${workspaceFolder}/src/Services/Identity/Identity.Service/bin/Debug/net5.0/Identity.Service.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/Services/Identity/Identity.Service",
       "stopAtEntry": false,
@@ -45,7 +45,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "Build solution",
-      "program": "${workspaceFolder}/src/Services/Customers/Customer.Api/bin/Debug/netcoreapp5.0/Customer.Api.dll",
+      "program": "${workspaceFolder}/src/Services/Customers/Customer.Api/bin/Debug/net5.0/Customer.Api.dll",
       "args": [],
       "cwd": "${workspaceFolder}/src/Services/Customers/Customer.Api",
       "stopAtEntry": false,
@@ -64,6 +64,19 @@
       "url": "http://localhost:3000/",
       "webRoot": "${workspaceFolder}/src/Web/invoicing-frontend",
       "preLaunchTask": "yarn dev invoicing-frontend",
+    },
+    {
+      "name": "Run Identity.DatabaseUpdater",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build solution",
+      "program": "${workspaceFolder}/src/Services/Identity/Identity.DatabaseUpdater/bin/Debug/net5.0/Identity.DatabaseUpdater.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Services/Identity/Identity.DatabaseUpdater",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   ],
   "compounds": [
