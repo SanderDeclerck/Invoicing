@@ -20,7 +20,7 @@ jobs:
 
       - name: Build & Push invoicing-frontend to Docker Hub
         run: |
-          docker build -t sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7) ./src/Web/invoicing-frontend
+          docker build --build-arg FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }} -t sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7) ./src/Web/invoicing-frontend
           docker push sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7)
 
   deploy:
