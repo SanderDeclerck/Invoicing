@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using IdentityServer4.Models;
 
-namespace Identity.Service
+namespace Identity.Service.Configuration
 {
     public static class Config
     {
@@ -20,14 +20,14 @@ namespace Identity.Service
                 new ApiResource("customer.api", "Customer Api")
             };
 
-        public static IEnumerable<Client> Clients =>
+        public static IEnumerable<Client> GetClients(BaseUrlConfiguration baseUrls) =>
             new Client[]
             {
                 new Client
                 {
-                    ClientId = "invoicing.test",
-                    ClientName = "Invoicing test cliet",
-                    ClientUri = "https://localhost:5010",
+                    ClientId = "invoicing.frontend",
+                    ClientName = "Invoicing frontend",
+                    ClientUri = baseUrls.Frontend,
 
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
@@ -36,11 +36,11 @@ namespace Identity.Service
 
                     RedirectUris =
                     {
-                        "https://localhost:5010/callback.html",
+                        $"{baseUrls.Frontend}/auth/callback",
                     },
 
-                    PostLogoutRedirectUris = { "https://localhost:5010" },
-                    AllowedCorsOrigins = { "https://localhost:5010" },
+                    PostLogoutRedirectUris = { baseUrls.Frontend },
+                    AllowedCorsOrigins = { baseUrls.Frontend },
 
                     AllowedScopes = { "openid", "profile", "customer.api" }
                 }

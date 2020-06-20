@@ -9,6 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Identity.Service.Domain;
 using IdentityServer4.Services;
 using Identity.Service.Services;
+using Identity.Service.Configuration;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Threading.Tasks;
 
 namespace Identity.Service
 {
@@ -21,10 +24,11 @@ namespace Identity.Service
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var baseUrlConfiguration = Configuration.GetSection("BaseUrls").Get<BaseUrlConfiguration>();
+
             MigrateDatabase(connectionString);
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
@@ -42,15 +46,20 @@ namespace Identity.Service
                 })
                 .AddInMemoryIdentityResources(Config.Ids)
                 .AddInMemoryApiResources(Config.Apis)
-                .AddInMemoryClients(Config.Clients)
+                .AddInMemoryClients(Config.GetClients(baseUrlConfiguration))
                 .AddAspNetIdentity<ApplicationUser>();
 
             builder.Services.AddTransient<IProfileService, ProfileService>();
 
             builder.AddDeveloperSigningCredential();
+
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders =
+                    ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -61,6 +70,13 @@ namespace Identity.Service
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseForwardedHeaders();
+                app.Use(async (context, next) =>
+                        {
+                            // In production: always use https --> Set scheme in case tls is terminated by a reverse proxy
+                            context.Request.Scheme = "https";
+                            await next.Invoke();
+                        });
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

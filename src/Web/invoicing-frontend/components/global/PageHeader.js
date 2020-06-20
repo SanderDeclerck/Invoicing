@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import useAuthentication from "../../hooks/useAuthentication";
 
 const ActionButton = ({ name, icon, url }) => (
   <>
@@ -14,12 +15,14 @@ const ActionButton = ({ name, icon, url }) => (
 );
 
 const PageHeader = () => {
+  const [authentication, signIn, signOut] = useAuthentication();
+
   return (
     <>
       <header>
         <nav className="submenu">
           <div className="logo">
-            <h1 onClick={() => console.log("lol")}>SD INVOICING</h1>
+            <h1>SD INVOICING</h1>
           </div>
           <ActionButton name="Customers" icon="address-book" url="/customer" />
           <ActionButton
@@ -31,17 +34,47 @@ const PageHeader = () => {
         </nav>
         <nav className="submenu">
           <div className="account">
-            <h3>Logged in as</h3>
-            <div>
-              <a href="#" className="account-user">
-                Sander Declerck
-              </a>
-            </div>
-            <div>
-              <a href="#" className="account-tenant">
-                SD Software Bv
-              </a>
-            </div>
+            {authentication.isLoggedIn ? (
+              <>
+                <h3>Logged in as</h3>
+                <div>
+                  <span className="account-user">
+                    {`${authentication.user.profile.preferred_username} / ${authentication.user.profile.tenant_name}`}
+                  </span>
+                </div>
+                <div>
+                  <span className="account-tenant"></span>
+                </div>
+                <div>
+                  <a
+                    href="#"
+                    className="account-user"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      signOut();
+                    }}
+                  >
+                    Log out{" "}
+                    <FontAwesomeIcon icon={["fal", "sign-out-alt"]} size="xs" />
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3>Not logged in</h3>
+                <a
+                  href="#"
+                  className="account-user"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    signIn();
+                  }}
+                >
+                  Log in{" "}
+                  <FontAwesomeIcon icon={["fal", "sign-in-alt"]} size="xs" />
+                </a>
+              </>
+            )}
           </div>
         </nav>
       </header>
