@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import useAuthentication from "../../hooks/useAuthentication";
+import { AuthenticationContext } from "../../lib/Authentication/AuthenticationContext";
 
 const ActionButton = ({ name, icon, url }) => (
   <>
@@ -15,7 +15,7 @@ const ActionButton = ({ name, icon, url }) => (
 );
 
 const PageHeader = () => {
-  const [authentication, signIn, signOut] = useAuthentication();
+  const { authentication, signIn, signOut } = useContext(AuthenticationContext);
 
   return (
     <>

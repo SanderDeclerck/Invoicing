@@ -8,6 +8,7 @@ export default function handler(req, res) {
     client_id: "invoicing.frontend",
     redirect_uri: callback,
     response_type: "code",
+    response_mode: "query",
     scope: "openid profile customer.api",
     post_logout_redirect_uri: postLogoutRedirect,
   };

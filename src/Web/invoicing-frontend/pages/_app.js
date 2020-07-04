@@ -9,6 +9,7 @@ import {
   faSignInAlt,
 } from "@fortawesome/pro-light-svg-icons";
 import PageHeader from "../components/global/PageHeader";
+import { AuthenticationProvider } from "../lib/Authentication/AuthenticationContext";
 
 const setupFontawesome = () => {
   library.add(
@@ -25,11 +26,11 @@ const setupFontawesome = () => {
 export default function MyApp({ Component, pageProps }) {
   setupFontawesome();
   return (
-    <>
+    <AuthenticationProvider>
       <PageHeader />
       <div className="page-content">
         <Component {...pageProps} />
       </div>
-    </>
+    </AuthenticationProvider>
   );
 }
