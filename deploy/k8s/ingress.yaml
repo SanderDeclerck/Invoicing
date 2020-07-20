@@ -10,6 +10,8 @@ spec:
     - hosts:
         - invoicing.sdsoftware.be
         - id.invoicing.sdsoftware.be
+        - api.customer.invoicing.sdsoftware.be
+        # MAKE SURE DNS IS SET UP CORRECTLY BEFORE ADDING HERE
       secretName: invoicing-sdsoftware-be-certificate
   rules:
     - host: invoicing.sdsoftware.be
@@ -23,4 +25,10 @@ spec:
         paths:
           - backend:
               serviceName: invoicing-identityservice
+              servicePort: 80
+    - host: api.customer.invoicing.sdsoftware.be
+      http:
+        paths:
+          - backend:
+              serviceName: invoicing-customer-api
               servicePort: 80

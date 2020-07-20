@@ -36,6 +36,13 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/postgresql
               name: postgredb-data
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
       initContainers:
         - name: pgsql-data-permission-fix
           image: busybox

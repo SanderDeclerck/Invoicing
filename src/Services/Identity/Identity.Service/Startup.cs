@@ -11,7 +11,6 @@ using IdentityServer4.Services;
 using Identity.Service.Services;
 using Identity.Service.Configuration;
 using Microsoft.AspNetCore.HttpOverrides;
-using System.Threading.Tasks;
 
 namespace Identity.Service
 {

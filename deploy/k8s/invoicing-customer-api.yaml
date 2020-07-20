@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: invoicing-identityservice
+  name: invoicing-customer-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: invoicing-identityservice
+      app: invoicing-customer-api
   paused: true
   template:
     metadata:
       labels:
-        app: invoicing-identityservice
+        app: invoicing-customer-api
     spec:
       containers:
-        - name: invoicing-identityservice
-          image: invoicing-identityservice
+        - name: invoicing-customer-api
+          image: invoicing-customer-api
           ports:
             - containerPort: 80
           env:
@@ -24,9 +24,16 @@ spec:
                 configMapKeyRef:
                   name: invoicing-urls
                   key: frontend-base-url
-          envFrom:
-            - configMapRef:
-                name: identity-service-config
+            - name: BaseUrls__IdentityService
+              valueFrom:
+                configMapKeyRef:
+                  name: invoicing-urls
+                  key: identity-service-base-url
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: customer-api-db-secrets
+                  key: connectionstring
           resources:
             requests:
               memory: "128Mi"
@@ -38,9 +45,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: invoicing-identityservice
+  name: invoicing-customer-api
 spec:
   selector:
-    app: invoicing-identityservice
+    app: invoicing-customer-api
   ports:
     - port: 80

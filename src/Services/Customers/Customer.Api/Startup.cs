@@ -7,6 +7,14 @@ using Invoicing.Customers.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using MediatR;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+using System;
+using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Net;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace Customer.Api
 {
@@ -25,10 +33,14 @@ namespace Customer.Api
             services.AddControllers()
                 .AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>());
 
+            var identityServiceUrl = Configuration.GetSection(ConfigurationPath.Combine("BaseUrls", "IdentityService")).Get<string>();
+            var frontendUrl = Configuration.GetSection(ConfigurationPath.Combine("BaseUrls", "Frontend")).Get<string>();
+            var mongoConnectionString = GetMongoConnectionStringWithIp(Configuration.GetConnectionString("DefaultConnection"));
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:5000";
+                    options.Authority = identityServiceUrl;
                     options.Audience = "customer.api";
                     options.RequireHttpsMetadata = true;
                 });
@@ -37,13 +49,19 @@ namespace Customer.Api
             {
                 builder.AddDefaultPolicy(options =>
                 {
-                    options.WithOrigins("https://localhost:5010").AllowAnyHeader().AllowCredentials();
+                    options.WithOrigins(frontendUrl).AllowAnyHeader().AllowCredentials();
                 });
             });
             services.AddMediatR(typeof(Startup));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddCustomersInfrastructure("mongodb://127.0.0.1:27017");
+            services.AddCustomersInfrastructure(mongoConnectionString);
+
+            services.AddHealthChecks()
+                .AddMongoDb(mongoConnectionString)
+                .AddIdentityServer(new Uri(identityServiceUrl));
+
+            services.AddHealthChecksUI(setup => setup.AddHealthCheckEndpoint("Customer api", "/health")).AddInMemoryStorage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,7 +84,31 @@ namespace Customer.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
+                endpoints.MapHealthChecksUI();
             });
+        }
+
+        private string GetMongoConnectionStringWithIp(string connectionString)
+        {
+            var builder = new MongoUrlBuilder(connectionString);
+            var servers = new List<MongoServerAddress>();
+            foreach (var server in builder.Servers)
+            {
+                var address = Dns.GetHostAddresses(server.Host).FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                if (address == null)
+                {
+                    throw new Exception($"Could not resolve address for {server.Host}");
+                }
+
+                servers.Add(new MongoServerAddress(address.ToString(), server.Port));
+            }
+            builder.Servers = servers;
+            return builder.ToMongoUrl().ToString();
         }
     }
 }

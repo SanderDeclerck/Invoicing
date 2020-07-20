@@ -18,16 +18,29 @@ spec:
           image: invoicing-frontend
           ports:
             - containerPort: 3000
-          envFrom:
-            - configMapRef:
-                name: frontend-config
+          env:
+            - name: OIDC_AUTHORITY
+              valueFrom:
+                configMapKeyRef:
+                  name: invoicing-urls
+                  key: identity-service-base-url
+            - name: OIDC_CALLBACK
+              valueFrom:
+                configMapKeyRef:
+                  name: invoicing-urls
+                  key: frontend-callback-url
+            - name: OIDC_POST_LOGOUT_REDIRECT
+              valueFrom:
+                configMapKeyRef:
+                  name: invoicing-urls
+                  key: frontend-base-url
           resources:
             requests:
               memory: "128Mi"
-              cpu: "250m"
+              cpu: "100m"
             limits:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "200m"
 ---
 apiVersion: v1
 kind: Service
@@ -38,12 +51,3 @@ spec:
     app: invoicing-frontend
   ports:
     - port: 3000
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: frontend-config
-data:
-  OIDC_AUTHORITY: https://id.invoicing.sdsoftware.be/
-  OIDC_CALLBACK: https://invoicing.sdsoftware.be/auth/callback
-  OIDC_POST_LOGOUT_REDIRECT: https://invoicing.sdsoftware.be/

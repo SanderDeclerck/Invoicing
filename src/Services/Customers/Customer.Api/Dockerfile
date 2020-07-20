@@ -16,11 +16,11 @@ RUN dotnet restore
 
 COPY . .
 
-WORKDIR /source/src/Services/Identity/Identity.Service
+WORKDIR /source/src/Services/Customers/Customer.Api
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
 WORKDIR /app
-COPY --from=build /source/src/Services/Identity/Identity.Service/out ./
+COPY --from=build /source/src/Services/Customers/Customer.Api/out ./
 EXPOSE 80
-ENTRYPOINT ["dotnet", "Identity.Service.dll"]
+ENTRYPOINT ["dotnet", "Customer.Api.dll"]
