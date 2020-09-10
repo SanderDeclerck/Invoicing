@@ -55,7 +55,10 @@ export const AuthenticationProvider = ({ children }) => {
     }
     dispatch(async (dispatch) => {
       await authentication.userManager.signinRedirectCallback();
-      dispatch({ type: SET_USER, payload: await userManager.getUser() });
+      dispatch({
+        type: SET_USER,
+        payload: await authentication.userManager.getUser(),
+      });
     });
   };
 
