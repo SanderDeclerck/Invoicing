@@ -62,7 +62,7 @@
       "version": "beta",
       "request": "launch",
       "url": "http://localhost:3000/",
-      "webRoot": "${workspaceFolder}/src/Web/invoicing-frontend",
+      "webRoot": "${workspaceFolder}/src/Web/invoicing-frontend/",
       "preLaunchTask": "yarn dev invoicing-frontend",
     },
     {
@@ -84,7 +84,7 @@
       "name": "All",
       "configurations": [
         "Start Identity.Service",
-        "Start Test Client",
+        "Start frontend in edge",
         "Start Customer.Service"
       ]
     }
