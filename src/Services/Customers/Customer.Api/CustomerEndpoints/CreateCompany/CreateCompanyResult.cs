@@ -1,16 +1,16 @@
-namespace Invoicing.Customers.Api.Commands
+namespace Invoicing.Customers.Api.CustomerEndpoints.CreateCompany
 {
     public class CreateCompanyResult
     {
-        public string Id { get; }
-        public string Name { get; }
-        public string VatNumber { get; }
-
         public CreateCompanyResult(string id, string name, string vatNumber)
         {
             Id = id;
             Name = name;
             VatNumber = vatNumber;
         }
+
+        public string Id { get; }
+        public string Name { get; }
+        public string VatNumber { get; }
     }
 }

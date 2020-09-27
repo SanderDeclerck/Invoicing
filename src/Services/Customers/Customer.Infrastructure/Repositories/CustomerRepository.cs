@@ -5,6 +5,9 @@ using Invoicing.Customers.Domain.CustomerAggregate;
 using MongoDB.Driver;
 using Base.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace Invoicing.Customers.Infrastructure.Repositories
 {
@@ -20,25 +23,34 @@ namespace Invoicing.Customers.Infrastructure.Repositories
 
         public override IUnitOfWork UnitOfWork => _customerMongoContext;
 
-        public async Task<Customer> AddAsync(Customer customer)
+        public async Task<Customer> AddAsync(Customer customer, CancellationToken cancellationToken)
         {
-            await _customerMongoContext.GetCustomerCollection().InsertOneAsync(GetEntity(customer));
+            await _customerMongoContext.GetCustomerCollection().InsertOneAsync(GetEntity(customer), cancellationToken: cancellationToken);
             return customer;
         }
 
-        public async Task<Customer?> GetAsync(string customerId)
+        public async Task<Customer?> GetAsync(string customerId, CancellationToken cancellationToken)
         {
             var customer = (await _customerMongoContext.GetCustomerCollection()
-                                                       .FindAsync<TenantEntity<Customer>>(CreateCustomerByIdFilter(customerId)))
+                                                       .FindAsync<TenantEntity<Customer>>(CreateCustomerByIdFilter(customerId), cancellationToken: cancellationToken))
                                                        .FirstOrDefault();
             return customer?.Entity;
         }
 
-        public async Task<Customer> UpdateAsync(Customer customer)
+
+        public async Task<List<Customer>> GetList(CancellationToken cancellationToken)
+        {
+            var customers = await _customerMongoContext.GetCustomerCollection()
+                                                       .FindAsync<TenantEntity<Customer>>(CreateTenantFilter(), cancellationToken: cancellationToken);
+            return customers.ToEnumerable().Select(record => record.Entity).ToList();
+        }
+
+        public async Task<Customer> UpdateAsync(Customer customer, CancellationToken cancellationToken)
         {
             await _customerMongoContext.GetCustomerCollection()
                                        .ReplaceOneAsync(CreateCustomerByIdFilter(customer.Id),
-                                                        GetEntity(customer));
+                                                        GetEntity(customer),
+                                                        cancellationToken: cancellationToken);
             return customer;
         }
 
@@ -46,7 +58,12 @@ namespace Invoicing.Customers.Infrastructure.Repositories
         {
             return Builders<TenantEntity<Customer>>.Filter.And(
                         Builders<TenantEntity<Customer>>.Filter.Eq(c => c.Entity.Id, customerId),
-                        Builders<TenantEntity<Customer>>.Filter.Eq(c => c.TenantId, TenantId));
+                        CreateTenantFilter());
+        }
+
+        private FilterDefinition<TenantEntity<Customer>> CreateTenantFilter()
+        {
+            return Builders<TenantEntity<Customer>>.Filter.Eq(c => c.TenantId, TenantId);
         }
     }
 }

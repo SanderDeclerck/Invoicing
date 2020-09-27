@@ -16,7 +16,7 @@ using System.Net;
 using System.Linq;
 using System.Net.Sockets;
 
-namespace Customer.Api
+namespace Customers.Api
 {
     public class Startup
     {
