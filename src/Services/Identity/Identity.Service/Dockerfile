@@ -11,7 +11,6 @@ COPY src/Services/Customers/Customer.Infrastructure/Customers.Infrastructure.csp
 COPY src/Services/Customers/Customer.UnitTests/Customers.UnitTests.csproj src/Services/Customers/Customer.UnitTests/Customers.UnitTests.csproj
 COPY src/Services/Identity/Identity.Service/Identity.Service.csproj src/Services/Identity/Identity.Service/Identity.Service.csproj
 
-COPY src/Web/Invoicing.TestClient/Invoicing.TestClient.csproj src/Web/Invoicing.TestClient/Invoicing.TestClient.csproj
 RUN dotnet restore
 
 COPY . .
