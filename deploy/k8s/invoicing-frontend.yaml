@@ -17,23 +17,7 @@ spec:
         - name: invoicing-frontend
           image: invoicing-frontend
           ports:
-            - containerPort: 3000
-          env:
-            - name: OIDC_AUTHORITY
-              valueFrom:
-                configMapKeyRef:
-                  name: invoicing-urls
-                  key: identity-service-base-url
-            - name: OIDC_CALLBACK
-              valueFrom:
-                configMapKeyRef:
-                  name: invoicing-urls
-                  key: frontend-callback-url
-            - name: OIDC_POST_LOGOUT_REDIRECT
-              valueFrom:
-                configMapKeyRef:
-                  name: invoicing-urls
-                  key: frontend-base-url
+            - containerPort: 80
           resources:
             requests:
               memory: "128Mi"
@@ -50,4 +34,4 @@ spec:
   selector:
     app: invoicing-frontend
   ports:
-    - port: 3000
+    - port: 80
