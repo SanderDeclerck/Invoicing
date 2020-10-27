@@ -25,7 +25,7 @@ namespace Invoicing.Customers.Infrastructure.Repositories
 
         public async Task<Customer> AddAsync(Customer customer, CancellationToken cancellationToken)
         {
-            await _customerMongoContext.GetCustomerCollection().InsertOneAsync(GetEntity(customer), cancellationToken: cancellationToken);
+            await _customerMongoContext.GetCustomerCollection().InsertOneAsync(WrapForTenant(customer), cancellationToken: cancellationToken);
             return customer;
         }
 
@@ -49,7 +49,7 @@ namespace Invoicing.Customers.Infrastructure.Repositories
         {
             await _customerMongoContext.GetCustomerCollection()
                                        .ReplaceOneAsync(CreateCustomerByIdFilter(customer.Id),
-                                                        GetEntity(customer),
+                                                        WrapForTenant(customer),
                                                         cancellationToken: cancellationToken);
             return customer;
         }

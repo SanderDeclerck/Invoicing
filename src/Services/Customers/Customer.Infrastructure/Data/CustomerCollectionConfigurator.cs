@@ -1,10 +1,7 @@
 using Base.Infrastructure;
 using Invoicing.Base.Ddd;
 using Invoicing.Customers.Domain.CustomerAggregate;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Bson.Serialization.Serializers;
 
 namespace Invoicing.Customers.Infrastructure.Data
 {

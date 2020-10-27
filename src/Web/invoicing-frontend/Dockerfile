@@ -1,7 +1,11 @@
 # Do the npm install or yarn install in the full image
-FROM mhart/alpine-node AS builder
+FROM node:12 AS build
 
 ARG FONTAWESOME_NPM_AUTH_TOKEN
+ARG OIDC_AUTHORITY
+ARG OIDC_CALLBACK
+ARG OIDC_POST_LOGOUT_REDIRECT
+ARG CUSTOMER_SERVICE_API_BASEURL
 
 WORKDIR /app
 COPY package.json .
@@ -11,14 +15,17 @@ COPY .npmrc .
 ENV FONTAWESOME_NPM_AUTH_TOKEN=${FONTAWESOME_NPM_AUTH_TOKEN}
 
 RUN yarn install --frozen-lockfile
-COPY . .
-RUN yarn build && yarn --production
 
-# And then copy over node_modules, etc from that stage to the smaller base image
-FROM mhart/alpine-node:base
-WORKDIR /app
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-# COPY --from=builder /app/public ./public
-EXPOSE 3000
-CMD ["node_modules/.bin/next", "start"]
+ENV OIDC_AUTHORITY=${OIDC_AUTHORITY}
+ENV OIDC_CALLBACK=${OIDC_CALLBACK}
+ENV OIDC_POST_LOGOUT_REDIRECT=${OIDC_POST_LOGOUT_REDIRECT}
+ENV CUSTOMER_SERVICE_API_BASEURL=${CUSTOMER_SERVICE_API_BASEURL}
+
+COPY . .
+RUN yarn build
+
+FROM nginx:stable-alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD [ "nginx", "-g", "daemon off;" ]

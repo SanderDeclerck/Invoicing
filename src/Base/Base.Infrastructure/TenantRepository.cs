@@ -27,6 +27,6 @@ namespace Base.Infrastructure
             }
         }
 
-        protected TenantEntity<T> GetEntity(T entity) => new TenantEntity<T>(entity, TenantId);
+        protected TenantEntity<T> WrapForTenant(T entity) => new TenantEntity<T>(entity, TenantId);
     }
 }

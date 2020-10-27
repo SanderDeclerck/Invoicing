@@ -1,72 +1,69 @@
-import { createContext, useEffect } from "react";
+import React, { createContext, useEffect } from "react";
 import { UserManager } from "oidc-client";
 import { useThunkReducer } from "../useThunkReducer";
-import {
-  authenticationReducer,
-  START_INITIALIZE,
-  INITIALIZED,
-  SET_USER,
-} from "./authenticationReducer";
+import { authenticationReducer, SET_USER } from "./authenticationReducer";
+import getSiteConfiguration from "../config";
 
 export const AuthenticationContext = createContext();
 
+var { identityService } = getSiteConfiguration();
+
 const initialState = {
   isLoggedIn: false,
-  isReady: false,
   user: {},
-  userManager: {},
+  userManager: new UserManager({
+    authority: identityService.authority,
+    client_id: "invoicing.frontend",
+    redirect_uri: identityService.redirectUri,
+    response_type: "code",
+    response_mode: "query",
+    scope: "openid profile customer.api",
+    post_logout_redirect_uri: identityService.postLogoutRedirectUri,
+  }),
 };
 
-export const AuthenticationProvider = ({ children }) => {
-  const [authentication, dispatch] = useThunkReducer(
+export function AuthenticationProvider({ children }) {
+  var [authentication, dispatch] = useThunkReducer(
     authenticationReducer,
     initialState
   );
 
-  useEffect(() => {
-    dispatch(async (dispatch) => {
-      dispatch({ type: START_INITIALIZE });
-      const response = await fetch("/api/auth/config");
-      const oidcConfig = await response.json();
-      dispatch({ type: INITIALIZED, payload: new UserManager(oidcConfig) });
-    });
-  }, []);
+  useEffect(initialize, []);
 
-  useEffect(() => {
-    if (authentication.isReady && !authentication.isLoggedIn) {
-      dispatch(async (dispatch) => {
-        dispatch({
-          type: SET_USER,
-          payload: await authentication.userManager.getUser(),
-        });
-      });
+  function initialize() {
+    if (!authentication.isLoggedIn) {
+      dispatch(setUserFromUserManager);
     }
-  }, [authentication]);
+  }
 
-  const signIn = () =>
-    authentication.isReady && authentication.userManager.signinRedirect();
-
-  const signOut = () =>
-    authentication.isReady && authentication.userManager.signoutRedirect();
-
-  const handleCallback = () => {
-    if (!authentication.isReady) {
-      return;
-    }
-    dispatch(async (dispatch) => {
-      await authentication.userManager.signinRedirectCallback();
+  async function setUserFromUserManager(dispatch) {
+    var user = await authentication.userManager.getUser();
+    if (user) {
       dispatch({
         type: SET_USER,
         payload: await authentication.userManager.getUser(),
       });
-    });
-  };
+    }
+  }
 
-  const value = { authentication, signIn, signOut, handleCallback };
+  function signIn() {
+    return authentication.userManager.signinRedirect();
+  }
+
+  function signOut() {
+    return authentication.userManager.signoutRedirect();
+  }
+
+  async function handleCallback() {
+    await authentication.userManager.signinRedirectCallback();
+    dispatch(setUserFromUserManager);
+  }
+
+  var value = { authentication, signIn, signOut, handleCallback };
 
   return (
     <AuthenticationContext.Provider value={value}>
       {children}
     </AuthenticationContext.Provider>
   );
-};
+}

@@ -66,8 +66,8 @@
           ],
           "background": {
             "activeOnStart": false,
-            "beginsPattern": "^ready - started server on (.*)$",
-            "endsPattern": "^event - compiled successfully$"
+            "beginsPattern": "Building",
+            "endsPattern": "Built in [0-9\\.]+s\\.$",
           }
         }
       ]

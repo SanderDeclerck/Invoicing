@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "master"
+      - "customer-list"
 
 jobs:
   build:
@@ -22,7 +23,14 @@ jobs:
 
       - name: Build & Push invoicing-frontend to Docker Hub
         run: |
-          docker build --build-arg FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }} -t sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7) ./src/Web/invoicing-frontend
+          docker build \
+            --build-arg FONTAWESOME_NPM_AUTH_TOKEN=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }} \
+            --build-arg OIDC_AUTHORITY=${{ secrets.FRONTEND_OIDC_AUTHORITY }} \
+            --build-arg OIDC_CALLBACK=${{ secrets.FRONTEND_OIDC_CALLBACK }} \
+            --build-arg OIDC_POST_LOGOUT_REDIRECT=${{ secrets.FRONTEND_OIDC_POST_LOGOUT_REDIRECT }} \
+            --build-arg CUSTOMER_SERVICE_API_BASEURL=${{ secrets.FRONTEND_CUSTOMER_SERVICE_API_BASEURL }} \
+            -t sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7) \
+            ./src/Web/invoicing-frontend
           docker push sanderdeclerck/invoicing-frontend:$(echo $GITHUB_SHA | head -c7)
 
       - name: Build & Push invoicing-customer-api to Docker Hub
