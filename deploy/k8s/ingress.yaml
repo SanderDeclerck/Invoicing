@@ -19,7 +19,7 @@ spec:
         paths:
           - backend:
               serviceName: invoicing-frontend
-              servicePort: 3000
+              servicePort: 80
     - host: id.invoicing.sdsoftware.be
       http:
         paths:
