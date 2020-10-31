@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Router } from "@reach/router";
-import PageHeader from "./layout/PageHeader";
-import Home from "./pages/home";
-import Invoice from "./pages/invoice";
-import Catalog from "./pages/catalog";
-import Customer from "./pages/customer";
-import { AuthenticationProvider } from "./lib/Authentication/AuthenticationContext";
-import { default as OidcCallback } from "./pages/callback";
+import PageHeader from "./features/layout/PageHeader";
+import Home from "./features/home";
+import Invoice from "./features/invoice";
+import Catalog from "./features/catalog";
+import Customer from "./features/customer";
+import { AuthenticationProvider } from "./features/authentication/authenticationContext";
+import { default as OidcCallback } from "./features/authentication/callback";
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
   );
 }
 
-document.addEventListener("DOMContentLoaded", function initializeApplcation() {
+document.addEventListener("DOMContentLoaded", function initializeApplication() {
   setupFontawesome();
   ReactDOM.render(<App />, document.getElementById("root"));
 });

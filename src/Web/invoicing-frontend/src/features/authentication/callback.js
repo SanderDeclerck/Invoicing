@@ -1,6 +1,6 @@
 import { useNavigate } from "@reach/router";
 import React, { useContext, useEffect } from "react";
-import { AuthenticationContext } from "../../lib/Authentication/AuthenticationContext";
+import { AuthenticationContext } from "./authenticationContext";
 
 function Callback() {
   const { authentication, handleCallback } = useContext(AuthenticationContext);

@@ -1,11 +1,11 @@
 import React, { createContext, useEffect } from "react";
 import { UserManager } from "oidc-client";
-import { useThunkReducer } from "../useThunkReducer";
 import { authenticationReducer, SET_USER } from "./authenticationReducer";
-import getSiteConfiguration from "../config";
+import getSiteConfiguration from "../../shared/configuration/siteConfiguration";
+import { useThunkReducer } from "../../shared/hooks/useThunkReducer";
 
 export const AuthenticationContext = createContext();
-
+console.log(1);
 var { identityService } = getSiteConfiguration();
 
 const initialState = {

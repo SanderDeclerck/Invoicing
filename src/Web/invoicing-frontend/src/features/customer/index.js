@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AuthenticationContext } from "../../lib/Authentication/AuthenticationContext";
-import getSiteConfiguration from "../../lib/config";
-import { useThunkReducer } from "../../lib/useThunkReducer";
+import { AuthenticationContext } from "../authentication/authenticationContext";
+import getSiteConfiguration from "../../shared/configuration/siteConfiguration";
+import { useThunkReducer } from "../../shared/hooks/useThunkReducer";
 
 var { customerService } = getSiteConfiguration();
 

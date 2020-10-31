@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "@reach/router";
-import { AuthenticationContext } from "../lib/Authentication/AuthenticationContext";
+import { AuthenticationContext } from "../authentication/authenticationContext";
 
 function ActionButton({ name, icon, url }) {
   return (
@@ -15,7 +15,8 @@ function ActionButton({ name, icon, url }) {
 }
 
 function PageHeader() {
-  const { authentication, signIn, signOut } = useContext(AuthenticationContext);
+  var context = useContext(AuthenticationContext);
+  const { authentication, signIn, signOut } = context;
 
   return (
     <>
