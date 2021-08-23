@@ -25,6 +25,7 @@ jobs:
       - uses: pulumi/actions@v3
         with:
           command: preview
+          work-dir: ./infrastructure
           stack-name: prd
           upsert: true
         env:
