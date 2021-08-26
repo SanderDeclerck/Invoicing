@@ -1,4 +1,4 @@
-name: pull-request-preview-infrastructure
+name: Push to master - deploy infrastructure
 
 on: workflow_dispatch
 
