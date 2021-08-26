@@ -21,6 +21,9 @@ jobs:
         uses: Azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Show account id
+        run: az account show --query id -o tsv
           
       - uses: pulumi/actions@v3
         with:
