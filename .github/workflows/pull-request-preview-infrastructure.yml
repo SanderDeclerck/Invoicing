@@ -30,6 +30,7 @@ jobs:
           command: preview
           work-dir: ./infrastructure
           stack-name: prd
+          comment-on-pr: true
           upsert: true
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
