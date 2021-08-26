@@ -1,6 +1,8 @@
 name: Push to master - deploy infrastructure
 
-on: workflow_dispatch
+on: 
+  push:
+    branches: [ main ]
 
 jobs:
   preview-infrastructure:
