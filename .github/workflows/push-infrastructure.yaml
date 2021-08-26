@@ -1,0 +1,30 @@
+name: pull-request-preview-infrastructure
+
+on: workflow_dispatch
+
+jobs:
+  preview-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.8.1
+        with:
+          dotnet-version: 6.0.x
+          include-prerelease: true
+          
+      - uses: pulumi/actions@v3
+        with:
+          command: up
+          work-dir: ./infrastructure
+          stack-name: prd
+          comment-on-pr: true
+          upsert: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
