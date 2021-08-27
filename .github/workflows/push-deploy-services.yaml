@@ -24,4 +24,4 @@ jobs:
           context: .
           file: src/services/invoicing/Invoicing.Api/Dockerfile
           push: true
-          tags: ghcr.io/Sdsoftware-bv/invoicing-api:${{ env.GITHUB_SHA }}
+          tags: ghcr.io/Sdsoftware-bv/invoicing-api:$(echo $GITHUB_SHA | head -c7)
