@@ -1,0 +1,20 @@
+name: Push to master - deploy infrastructure
+
+on: 
+  pull-request:
+    branches: [ main ]
+
+jobs:
+  build-dockerfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: src/services/invoicing/Invoicing.Api/Dockerfile
+          push: false
+          tags: invoicing-api:latest
