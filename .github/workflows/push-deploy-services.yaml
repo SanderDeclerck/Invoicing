@@ -10,11 +10,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           file: src/services/invoicing/Invoicing.Api/Dockerfile
-          push: false
-          tags: invoicing-api:latest
+          push: true
+          tags: ghcr.io/Sdsoftware-bv/invoicing-api:${{ env.GITHUB_SHA }}
