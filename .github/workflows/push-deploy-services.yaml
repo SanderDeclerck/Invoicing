@@ -1,4 +1,4 @@
-name: Push to master - deploy infrastructure
+name: Push to master - deploy services
 
 on: 
   pull_request:
