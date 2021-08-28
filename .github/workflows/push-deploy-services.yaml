@@ -37,3 +37,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-appservice:
+    runs-on: ubuntu-latest
+    needs: [build-dockerfile]
+
+    steps:      
+      - name: 'Login via Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Deploy to Azure Web App for Container'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: TODO
+          images: ghcr.io/Sdsoftware-bv/invoicing-api:${{ github.sha }}
