@@ -37,7 +37,7 @@ class MyStack : Stack
                     new NameValuePairArgs
                     {
                         Name = "DOCKER_REGISTRY_SERVER_URL",
-                        Value = "ghcr.io"
+                        Value = "https://ghcr.io"
                     },
                     new NameValuePairArgs
                     {
