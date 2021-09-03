@@ -15,7 +15,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ghcr.io/Sdsoftware-bv/invoicing-api
+          images: ghcr.io/sdsoftware-bv/invoicing-api
           flavor: latest=true
           tags: |
             type=ref,event=pr
@@ -52,4 +52,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: invoicing-service3ee1ade6
-          images: ghcr.io/Sdsoftware-bv/invoicing-api:${{ github.sha }}
+          images: ghcr.io/sdsoftware-bv/invoicing-api:${{ github.sha }}
