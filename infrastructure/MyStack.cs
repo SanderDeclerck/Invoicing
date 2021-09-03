@@ -2,6 +2,7 @@ using Pulumi;
 using Pulumi.AzureNative.Resources;
 using Pulumi.AzureNative.Web;
 using Pulumi.AzureNative.Web.Inputs;
+using ManagedServiceIdentityType = Pulumi.AzureNative.Web.ManagedServiceIdentityType;
 
 class MyStack : Stack
 {
@@ -28,7 +29,34 @@ class MyStack : Stack
         {
             ResourceGroupName = resourceGroup.Name,
             ServerFarmId = sdInvoicingPlan.Id,
-            Kind = "app,linux,container"
+            Kind = "app,linux,container",
+            SiteConfig = new SiteConfigArgs
+            {
+                AppSettings = new[]
+                {
+                    new NameValuePairArgs
+                    {
+                        Name = "DOCKER_REGISTRY_SERVER_URL",
+                        Value = "ghcr.io"
+                    },
+                    new NameValuePairArgs
+                    {
+                        Name = "DOCKER_REGISTRY_SERVER_USERNAME",
+                        Value = "@Microsoft.KeyVault(VaultName=kv-sd-software;SecretName=github-username)"
+                    },
+                    new NameValuePairArgs
+                    {
+                        Name = "DOCKER_REGISTRY_SERVER_PASSWORD",
+                        Value = "@Microsoft.KeyVault(VaultName=kv-sd-software;SecretName=github-packages-pat-token)"
+                    },
+                },
+                LinuxFxVersion = "DOCKER",
+                AlwaysOn = true
+            },
+            Identity = new ManagedServiceIdentityArgs
+            {
+                Type = ManagedServiceIdentityType.SystemAssigned
+            }
         }, new CustomResourceOptions { DependsOn = sdInvoicingPlan });
     }
 }
