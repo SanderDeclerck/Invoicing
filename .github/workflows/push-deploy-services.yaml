@@ -49,8 +49,8 @@ jobs:
       - name: Get Azure App Service name
         run: |
           pulumi login
-          pulumi stack select dev
-          pulumi stack output InvoicingServiceName
+          pulumi stack select dev -C ./infrastructure
+          pulumi stack output InvoicingServiceName -C ./infrastructure
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
