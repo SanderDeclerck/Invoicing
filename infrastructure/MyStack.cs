@@ -58,5 +58,9 @@ class MyStack : Stack
                 Type = ManagedServiceIdentityType.SystemAssigned
             }
         }, new CustomResourceOptions { DependsOn = sdInvoicingPlan });
+
+        InvoicingServiceName = webApp.Name;
     }
+
+    [Output] public Output<string> InvoicingServiceName { get; set; }
 }

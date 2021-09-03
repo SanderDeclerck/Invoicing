@@ -42,7 +42,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-dockerfile]
 
-    steps:      
+    steps:
+      - name: Install Pulumi CLI
+        uses: pulumi/setup-pulumi@v2
+
+      - name: Get Azure App Service name
+        run: |
+          pulumi login
+          pulumi stack select dev
+          pulumi stack output InvoicingServiceName
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
         with:
