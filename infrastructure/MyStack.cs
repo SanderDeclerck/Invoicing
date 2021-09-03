@@ -37,7 +37,7 @@ class MyStack : Stack
                     new NameValuePairArgs
                     {
                         Name = "DOCKER_REGISTRY_SERVER_URL",
-                        Value = "ghcr.io"
+                        Value = "https://ghcr.io"
                     },
                     new NameValuePairArgs
                     {
@@ -58,5 +58,9 @@ class MyStack : Stack
                 Type = ManagedServiceIdentityType.SystemAssigned
             }
         }, new CustomResourceOptions { DependsOn = sdInvoicingPlan });
+
+        InvoicingServiceName = webApp.Name;
     }
+
+    [Output] public Output<string> InvoicingServiceName { get; set; }
 }

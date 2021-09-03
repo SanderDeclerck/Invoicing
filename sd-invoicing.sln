@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6EB75112-618E-4817-8EF0-6E142F835A55}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{2D33F853-23CC-4A7E-9A98-D2CE52712A5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "invoicing", "invoicing", "{42C3E194-4CC8-4136-B9D2-C53C14E8941B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invoicing.Api", "src\services\invoicing\Invoicing.Api\Invoicing.Api.csproj", "{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sd-invoicing", "infrastructure\sd-invoicing.csproj", "{EEC68795-C1C8-4E50-BB42-A915ED53DF70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEC68795-C1C8-4E50-BB42-A915ED53DF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEC68795-C1C8-4E50-BB42-A915ED53DF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEC68795-C1C8-4E50-BB42-A915ED53DF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEC68795-C1C8-4E50-BB42-A915ED53DF70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2D33F853-23CC-4A7E-9A98-D2CE52712A5C} = {6EB75112-618E-4817-8EF0-6E142F835A55}
+		{42C3E194-4CC8-4136-B9D2-C53C14E8941B} = {2D33F853-23CC-4A7E-9A98-D2CE52712A5C}
+		{1642DC3D-7D1B-4A66-8E90-9D361FF6F0EC} = {42C3E194-4CC8-4136-B9D2-C53C14E8941B}
+	EndGlobalSection
+EndGlobal
