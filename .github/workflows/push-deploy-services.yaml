@@ -1,11 +1,11 @@
 name: Push to master - deploy services
 
 on: 
-  pull_request:
+  push:
     branches: [ main ]
 
 env:
-  ENVIRONMENT: dev
+  ENVIRONMENT: prd
 
 jobs:
   build-dockerfile:
