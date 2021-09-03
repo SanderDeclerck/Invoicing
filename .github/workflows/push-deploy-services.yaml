@@ -43,17 +43,23 @@ jobs:
     needs: [build-dockerfile]
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Install Pulumi CLI
         uses: pulumi/setup-pulumi@v2
 
       - name: Get Azure App Service name
+        id: pulumi
         run: |
           pulumi login
           pulumi stack select dev -C ./infrastructure
-          pulumi stack output InvoicingServiceName -C ./infrastructure
+          echo "::set-output name=invoicingservicename::$(pulumi stack output InvoicingServiceName -C ./infrastructure)"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
+      - name: Get Azure App Service name
+        run: echo ${{ steps.pulumi.outputs.invoicingservicename }}
 
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
