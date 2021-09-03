@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  ENVIRONMENT: dev
+
 jobs:
   build-dockerfile:
     runs-on: ubuntu-latest
@@ -53,13 +56,10 @@ jobs:
         id: pulumi
         run: |
           pulumi login
-          pulumi stack select dev -C ./infrastructure
+          pulumi stack select ${{ env.ENVIRONMENT }} -C ./infrastructure
           echo "::set-output name=invoicingservicename::$(pulumi stack output InvoicingServiceName -C ./infrastructure)"
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-
-      - name: Get Azure App Service name
-        run: echo ${{ steps.pulumi.outputs.invoicingservicename }}
 
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
@@ -69,5 +69,5 @@ jobs:
       - name: 'Deploy to Azure Web App for Container'
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: invoicing-service3ee1ade6
+          app-name: ${{ steps.pulumi.outputs.invoicingservicename }}
           images: ghcr.io/sdsoftware-bv/invoicing-api:${{ github.sha }}
