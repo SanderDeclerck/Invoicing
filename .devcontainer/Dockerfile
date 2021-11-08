@@ -1,21 +1,7 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/ubuntu/.devcontainer/base.Dockerfile
+# [Choice] .NET version: 6.0, 5.0, 3.1, 6.0-bullseye, 5.0-bullseye, 3.1-bullseye, 6.0-focal, 5.0-focal, 3.1-focal
+ARG VARIANT=6.0
+FROM mcr.microsoft.com/vscode/devcontainers/dotnet:0-${VARIANT}
 
-# [Choice] Ubuntu version: bionic, focal
-ARG VARIANT="focal"
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
-
-# [Optional] Uncomment this section to install additional OS packages.
-# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-#     && apt-get -y install --no-install-recommends <your-package-list-here>
-
-
-USER vscode
-WORKDIR /installation
-
-COPY scripts/*.sh /tmp/scripts/
-
-RUN bash /tmp/scripts/install-node.sh
-RUN bash /tmp/scripts/install-dotnet.sh
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-RUN curl -fsSL https://get.pulumi.com | bash
-
+# [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
+ARG NODE_VERSION="16"
+RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
