@@ -1,10 +1,8 @@
-import { asFunction, createContainer } from "awilix";
-import routes from "../../endpoints/http/routes.js";
+import { createContainer } from "awilix";
+import resolveEndpoints from "./endpoints.js";
 
 var container = createContainer();
 
-container.register({
-    routes: asFunction(routes)
-})
+resolveEndpoints(container);
 
 export default container;
