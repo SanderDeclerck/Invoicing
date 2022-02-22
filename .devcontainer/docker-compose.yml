@@ -16,6 +16,20 @@ services:
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
+
+    networks:
+      - backend
+      - frontend
+      
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - storage
+      - db
     
 
     # Uncomment the next line to use a non-root user for all processes.
@@ -33,16 +47,34 @@ services:
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     # Add "forwardPorts": ["10000", "10001"] to **devcontainer.json** to forward Azurite locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
-    network_mode: service:app
+    networks:
+      - backend
       
   db:
+    hostname: db.local
     image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
     mem_limit: 3g
     cpu_count: 2
+    
+    ports: 
+      - "8081:8081"
+      - "10251:10251"
+      - "10252:10252"
+      - "10253:10253"
+      - "10254:10254"
+      
     environment:
-        AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 3
+        AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 10
         AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: "true"
-    network_mode: service:app
+        
+    networks:
+      backend:
+        aliases:
+          - db.local
 
 volumes:
   storage-data:
+
+networks:
+  frontend:
+  backend:
