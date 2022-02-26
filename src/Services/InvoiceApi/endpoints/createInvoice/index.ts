@@ -1,16 +1,13 @@
 import { FastifyInstance } from "fastify";
+import createDatabase from "../../infrastructure/database";
+import createInvoice, { request as createInvoiceRequest } from "./createInvoice";
 
 export default function createInvoiceRoute(fastify: FastifyInstance, { }, done: () => void): void {
-  fastify.post("/invoice", createInvoice);
+  const database = createDatabase();
+
+  fastify.post<{ Body: createInvoiceRequest }>("/invoices", req => createInvoice(req.body, { database }));
 
   done();
 }
 
-interface createInvoiceResponse {
-  id: number;
-}
-
-async function createInvoice(): Promise<createInvoiceResponse> {
-  return { id: 5 };
-}
 

@@ -1,0 +1,8 @@
+### createInvoice request
+
+POST http://127.0.0.1:3000/v1/invoices
+Content-Type: application/json
+
+{
+  "customerName": "Cummerata Inc"
+}
