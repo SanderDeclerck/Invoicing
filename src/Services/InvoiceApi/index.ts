@@ -1,5 +1,9 @@
+import setupTelemetry from "./infrastructure/telemetry";
+import "dotenv/config";
+
+setupTelemetry();
+
 import build from "./app";
 
-const app = build();
+build().then(app => app.listen(process.env.PORT || 3000));
 
-app.listen(process.env.PORT || 3000);
