@@ -28,7 +28,7 @@ jobs:
           az group create --name ${{ env.ResourceGroupName }} --location northeurope
           az deployment group create \
             -g ${{ env.ResourceGroupName }} \
-            -f ./Invoicing/Services/InvoiceService/infrastructure/main.bicep \
+            -f ./Services/InvoiceService/infrastructure/main.bicep \
             -p name=invoicing-svc-13fl5u
 
       # - name: deploy
