@@ -6,7 +6,7 @@ namespace Invoicing.Services.InvoiceService.Invoices.Domain;
 
 public class Invoice : EntityBase, IAggregateRoot
 {
-    public static Invoice CreateForCustomer(Customer customer)
+    public static Invoice CreateInvoiceForCustomer(Customer customer)
     {
         return new Invoice(customer, Guid.NewGuid());
     }
