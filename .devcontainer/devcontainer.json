@@ -20,5 +20,12 @@
 	"features": {
 		"azure-cli": "latest",
 		"dotnet": "latest"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-bicep"
+			]
+		}
 	}
 }
