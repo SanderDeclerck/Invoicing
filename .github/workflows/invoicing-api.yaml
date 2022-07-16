@@ -6,7 +6,7 @@ permissions:
   contents: read
 
 env:
-  RESOURCE_GROUP: rg-invoicing
+  ResourceGroupName: rg-invoicing
 
 jobs: 
   build-and-deploy:
@@ -25,12 +25,11 @@ jobs:
   
       - name: 'Create resource group'
         run: |
-          az group create -n $RESOURCE_GROUP -l northeurope
+          az group create --name ${{ env.ResourceGroupName }} --location northeurope
 
       - name: deploy
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: ${{ env.RESOURCE_GROUP }}
+          resourceGroupName: ${{ env.ResourceGroupName }}
           template: ./Invoicing/Services/InvoiceService/infrastructure/main.bicep
           parameters: name=invoicing-svc-13fl5u
-          failOnStdErr: false
