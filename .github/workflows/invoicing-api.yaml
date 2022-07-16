@@ -26,14 +26,11 @@ jobs:
       - name: 'Create resource group'
         run: |
           az group create --name ${{ env.ResourceGroupName }} --location northeurope
-          az deployment group create \
-            -g ${{ env.ResourceGroupName }} \
-            -f ./Services/InvoiceService/infrastructure/main.bicep \
-            -p name=invoicing-svc-13fl5u
 
-      # - name: deploy
-      #   uses: azure/arm-deploy@v1
-      #   with:
-      #     resourceGroupName: ${{ env.ResourceGroupName }}
-      #     template: ./Invoicing/Services/InvoiceService/infrastructure/main.bicep
-      #     parameters: name=invoicing-svc-13fl5u
+
+      - name: 'Deploy azure infrastructure'
+        uses: azure/arm-deploy@v1
+        with:
+          resourceGroupName: ${{ env.ResourceGroupName }}
+          template: ./Services/InvoiceService/infrastructure/main.bicep
+          parameters: name=invoicing-svc-13fl5u
