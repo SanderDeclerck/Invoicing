@@ -18,5 +18,4 @@ jobs:
   
       - name: 'Run az commands'
         run: |
-          az account show
-          az group list
+          az group create -n test-abc -l northeurope
