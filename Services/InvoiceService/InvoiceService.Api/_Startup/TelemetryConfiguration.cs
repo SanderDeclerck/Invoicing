@@ -1,64 +1,50 @@
-using System.Diagnostics;
-using Microsoft.AspNetCore.Http.Features;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Logs;
 
 public static class TelemetryConfiguration
 {
     public const string ServiceName = "Invoicing";
     public static readonly string? Version = typeof(TelemetryConfiguration).Assembly.GetName().Version?.ToString();
 
-    public static void AddTelemetry(this IServiceCollection services)
+    public static void AddTelemetry(this WebApplicationBuilder builder)
     {
-        services.AddOpenTelemetryTracing(builder =>
+        var resourceBuilder = ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName);
+
+        builder.Logging.AddOpenTelemetry(logging => 
         {
-            builder
-                .AddSource(ServiceName)
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(serviceName: ServiceName, serviceVersion: Version))
-                .AddAspNetCoreInstrumentation(options =>
-                {
-                    options.Enrich = Enrich;
-                })
-                .AddOtlpExporter(options =>
-                {
-                    options.Endpoint = new Uri("https://api.honeycomb.io");
-                    options.Headers = "x-honeycomb-team={{key}}";
-                });
+            logging.SetResourceBuilder(resourceBuilder)
+                   .AddConsoleExporter();
         });
-    }
 
-    public static void Enrich(Activity activity, string eventName, object rawObject)
-    {
-        HttpContext context;
-        if (rawObject is HttpRequest request)
+        builder.Services.AddOpenTelemetryMetrics(metrics => 
         {
-            context = request.HttpContext;
-        }
-        else if (rawObject is HttpResponse response)
-        {
-            context = response.HttpContext;
-        }
-        else
-        {
-            return;
-        }
+            metrics.SetResourceBuilder(resourceBuilder)
+                   .AddAspNetCoreInstrumentation()
+                   .AddRuntimeInstrumentation()
+                   .AddHttpClientInstrumentation()
+                   .AddEventCountersInstrumentation(c =>
+                   {
+                       // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters
+                       c.AddEventSources(
+                           "Microsoft.AspNetCore.Hosting",
+                           // There's currently a bug preventing this from working
+                           // "Microsoft-AspNetCore-Server-Kestrel"
+                           "System.Net.Http", 
+                           "System.Net.Sockets",
+                           "System.Net.NameResolution",
+                           "System.Net.Security");
+                   })
+                   .AddConsoleExporter();
+        });
 
-        if (context.Features.Get<IEndpointFeature>()?.Endpoint is RouteEndpoint endpoint)
+        builder.Services.AddOpenTelemetryTracing(traces => 
         {
-            // We like display name like: GET /normalized-lower-case-route
-            // so it's easier to differentiate and sort, but that's just our pref. You can
-            // see how we get the route pattern, though.
-            var routeName = $"{context.Request.Method} {endpoint.RoutePattern?.RawText}";
-            activity.DisplayName = routeName;
-            activity.SetTag("http.target", routeName);
-        }
-        else
-        {
-            // Fall back to path.
-            var routeName = $"{context.Request.Method} {context.Request.Path.ToString().ToLowerInvariant()}";
-            activity.DisplayName = routeName;
-            activity.SetTag("http.target", routeName);
-        }
-
+            traces.SetResourceBuilder(resourceBuilder)
+                  .AddAspNetCoreInstrumentation()
+                  .AddHttpClientInstrumentation()
+                  .AddConsoleExporter();
+        });
     }
 }

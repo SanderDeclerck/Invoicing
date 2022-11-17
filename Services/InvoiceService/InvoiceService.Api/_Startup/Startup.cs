@@ -1,9 +1,12 @@
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Environment.ApplicationName = "Invoicing Service";
+
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTelemetry();
+
+builder.AddTelemetry();
 
 var app = builder.Build();
 
