@@ -2,6 +2,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
+using System.Diagnostics;
 
 file record HoneycombConfiguration(Uri Uri, string ApiKey);
 
@@ -60,7 +61,11 @@ public static class Telemetry
         builder.Services.AddOpenTelemetryTracing(traces => 
         {
             traces.SetResourceBuilder(resourceBuilder)
-                  .AddAspNetCoreInstrumentation()
+                  .AddAspNetCoreInstrumentation(options => {
+                    options.EnrichWithHttpResponse = (activity, response) => {
+                        SetActivityRoute(activity, response);
+                    };
+                  })
                   .AddHttpClientInstrumentation()
                   .AddConsoleExporter();
 
@@ -81,5 +86,14 @@ public static class Telemetry
         }
         
         return (honeycombTelemetryConfiguration.Uri, $"x-honeycomb-team={honeycombTelemetryConfiguration.ApiKey}");
+    }
+
+    private static void SetActivityRoute(Activity activity, HttpResponse response) {
+        if (response.HttpContext.GetEndpoint() is RouteEndpoint routeEndpoint) {
+            activity.SetTag("http.route", $"{response.HttpContext.Request.Method} {routeEndpoint.RoutePattern.RawText}");
+        }
+        else {
+            activity.SetTag("http.route", $"{response.HttpContext.Request.Method} {response.HttpContext.Request.Path}");
+        }
     }
 }

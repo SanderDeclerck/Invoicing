@@ -1,0 +1,12 @@
+### createInvoice request
+
+POST https://127.0.0.1:5000/invoices
+Content-Type: application/json
+
+{
+  "customerName": "Cummerata Inc"
+}
+
+### getInvoice request
+
+GET https://127.0.0.1:5000/invoices/5c3371e7-35bd-4101-b170-6641cf287ad9
