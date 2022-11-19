@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Services/InvoiceService/InvoiceService.Api/bin/Debug/net6.0/InvoiceService.Api.dll",
+            "program": "${workspaceFolder}/Services/InvoiceService/InvoiceService.Api/bin/Debug/net7.0/InvoiceService.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Services/InvoiceService/InvoiceService.Api",
             "stopAtEntry": false,

@@ -3,19 +3,30 @@ using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
 
-public static class TelemetryConfiguration
+file record HoneycombConfiguration(Uri Uri, string ApiKey);
+
+public static class Telemetry
 {
     public const string ServiceName = "Invoicing";
-    public static readonly string? Version = typeof(TelemetryConfiguration).Assembly.GetName().Version?.ToString();
+    public static readonly string? Version = typeof(Telemetry).Assembly.GetName().Version?.ToString();
 
     public static void AddTelemetry(this WebApplicationBuilder builder)
     {
+        var honeycombConfiguration = GetHoneycombConfiguration(builder.Configuration);
+
         var resourceBuilder = ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName);
 
         builder.Logging.AddOpenTelemetry(logging => 
         {
             logging.SetResourceBuilder(resourceBuilder)
                    .AddConsoleExporter();
+
+            if (honeycombConfiguration != null) {
+                logging.AddOtlpExporter(options => {
+                    options.Endpoint = honeycombConfiguration.Value.Endpoint;
+                    options.Headers = honeycombConfiguration.Value.Headers;
+                });
+            }
         });
 
         builder.Services.AddOpenTelemetryMetrics(metrics => 
@@ -37,6 +48,13 @@ public static class TelemetryConfiguration
                            "System.Net.Security");
                    })
                    .AddConsoleExporter();
+
+            if (honeycombConfiguration != null) {
+                metrics.AddOtlpExporter(options => {
+                    options.Endpoint = honeycombConfiguration.Value.Endpoint;
+                    options.Headers = honeycombConfiguration.Value.Headers;
+                });
+            }
         });
 
         builder.Services.AddOpenTelemetryTracing(traces => 
@@ -45,6 +63,23 @@ public static class TelemetryConfiguration
                   .AddAspNetCoreInstrumentation()
                   .AddHttpClientInstrumentation()
                   .AddConsoleExporter();
+
+            if (honeycombConfiguration != null) {
+                traces.AddOtlpExporter(options => {
+                    options.Endpoint = honeycombConfiguration.Value.Endpoint;
+                    options.Headers = honeycombConfiguration.Value.Headers;
+                });
+            }
         });
+    }
+
+    private static (Uri Endpoint, string Headers)? GetHoneycombConfiguration(IConfiguration configuration) {
+        var honeycombTelemetryConfiguration = configuration.GetSection("Telemetry").GetSection("Honeycomb").Get<HoneycombConfiguration>();
+
+        if (honeycombTelemetryConfiguration == null) {
+            return null;
+        }
+        
+        return (honeycombTelemetryConfiguration.Uri, $"x-honeycomb-team={honeycombTelemetryConfiguration.ApiKey}");
     }
 }
