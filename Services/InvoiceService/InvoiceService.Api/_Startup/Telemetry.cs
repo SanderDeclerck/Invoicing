@@ -4,8 +4,6 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
 using System.Diagnostics;
 
-file record HoneycombConfiguration(Uri Uri, string ApiKey);
-
 public static class Telemetry
 {
     public const string ServiceName = "Invoicing";
@@ -22,8 +20,10 @@ public static class Telemetry
             logging.SetResourceBuilder(resourceBuilder)
                    .AddConsoleExporter();
 
-            if (honeycombConfiguration != null) {
-                logging.AddOtlpExporter(options => {
+            if (honeycombConfiguration != null) 
+            {
+                logging.AddOtlpExporter(options => 
+                {
                     options.Endpoint = honeycombConfiguration.Value.Endpoint;
                     options.Headers = honeycombConfiguration.Value.Headers;
                 });
@@ -50,8 +50,10 @@ public static class Telemetry
                    })
                    .AddConsoleExporter();
 
-            if (honeycombConfiguration != null) {
-                metrics.AddOtlpExporter(options => {
+            if (honeycombConfiguration != null) 
+            {
+                metrics.AddOtlpExporter(options => 
+                {
                     options.Endpoint = honeycombConfiguration.Value.Endpoint;
                     options.Headers = honeycombConfiguration.Value.Headers;
                 });
@@ -61,16 +63,20 @@ public static class Telemetry
         builder.Services.AddOpenTelemetryTracing(traces => 
         {
             traces.SetResourceBuilder(resourceBuilder)
-                  .AddAspNetCoreInstrumentation(options => {
-                    options.EnrichWithHttpResponse = (activity, response) => {
+                  .AddAspNetCoreInstrumentation(options => 
+                  {
+                    options.EnrichWithHttpResponse = (activity, response) => 
+                    {
                         SetActivityRoute(activity, response);
                     };
                   })
                   .AddHttpClientInstrumentation()
                   .AddConsoleExporter();
 
-            if (honeycombConfiguration != null) {
-                traces.AddOtlpExporter(options => {
+            if (honeycombConfiguration != null) 
+            {
+                traces.AddOtlpExporter(options => 
+                {
                     options.Endpoint = honeycombConfiguration.Value.Endpoint;
                     options.Headers = honeycombConfiguration.Value.Headers;
                 });
@@ -78,22 +84,30 @@ public static class Telemetry
         });
     }
 
-    private static (Uri Endpoint, string Headers)? GetHoneycombConfiguration(IConfiguration configuration) {
+    private static (Uri Endpoint, string Headers)? GetHoneycombConfiguration(IConfiguration configuration) 
+    {
         var honeycombTelemetryConfiguration = configuration.GetSection("Telemetry").GetSection("Honeycomb").Get<HoneycombConfiguration>();
 
-        if (honeycombTelemetryConfiguration == null) {
+        if (honeycombTelemetryConfiguration == null) 
+        {
             return null;
         }
         
         return (honeycombTelemetryConfiguration.Uri, $"x-honeycomb-team={honeycombTelemetryConfiguration.ApiKey}");
     }
 
-    private static void SetActivityRoute(Activity activity, HttpResponse response) {
-        if (response.HttpContext.GetEndpoint() is RouteEndpoint routeEndpoint) {
+    private static void SetActivityRoute(Activity activity, HttpResponse response) 
+    {
+        if (response.HttpContext.GetEndpoint() is RouteEndpoint routeEndpoint) 
+        {
             activity.SetTag("http.route", $"{response.HttpContext.Request.Method} {routeEndpoint.RoutePattern.RawText}");
         }
-        else {
+        else 
+        {
             activity.SetTag("http.route", $"{response.HttpContext.Request.Method} {response.HttpContext.Request.Path}");
         }
     }
 }
+
+
+file record HoneycombConfiguration(Uri Uri, string ApiKey);

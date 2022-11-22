@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Invoicing.Services.InvoiceService.Api.Invoices;
 
-public static class GetInvoiceById {
+public static class GetInvoiceById 
+{
     public record Response(
         Guid Id
     );
