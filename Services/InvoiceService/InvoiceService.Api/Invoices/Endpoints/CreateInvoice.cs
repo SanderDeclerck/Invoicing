@@ -2,24 +2,37 @@ using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Invoicing.Services.InvoiceService.Invoices.Domain;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Invoicing.Services.InvoiceService.Api.Endpoints.Invoices;
+namespace Invoicing.Services.InvoiceService.Api.Invoices;
 
 public static class CreateInvoice
 {
-    private static readonly CreateInvoiceRequestValidator _validator = new CreateInvoiceRequestValidator();
+    public record Request(
+        [Required]
+        string CustomerName,
+        string StreetAndNumber,
+        string PostalCode,
+        string City,
+        string? Country,
+        string? VatNumber
+    );
 
-    public static async Task<IResult> Handle(
-        [FromBody] CreateInvoiceRequest request,
+    public record Response(
+        Guid Id
+    );
+
+    public static async Task<Results<CreatedAtRoute, ValidationProblem>> Handle(
+        [FromBody] Request request,
         [FromServices] IInvoiceRepository repository,
         CancellationToken cancellationToken)
     {
-        var validationResult = _validator.Validate(request);
+        var validationResult = new RequestValidator().Validate(request);
 
         if (!validationResult.IsValid)
         {
-            return Results.ValidationProblem(validationResult.ToDictionary());
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
         }
 
         var customer = CreateCustomer(request);
@@ -27,10 +40,10 @@ public static class CreateInvoice
 
         await repository.Insert(invoice, cancellationToken);
 
-        return Results.CreatedAtRoute(EndpointConfiguration.GetInvoiceRoute, new { id = invoice.Id });
+        return TypedResults.CreatedAtRoute(InvoiceApi.GetInvoiceByIdRouteName, new { id = invoice.Id });
     }
 
-    private static Customer CreateCustomer(CreateInvoiceRequest request)
+    private static Customer CreateCustomer(Request request)
     {
         const string DefaultCountry = "Belgium";
 
@@ -58,19 +71,9 @@ public static class CreateInvoice
     }
 }
 
-public record CreateInvoiceRequest(
-    [Required]
-    string CustomerName,
-    string StreetAndNumber,
-    string PostalCode,
-    string City,
-    string? Country,
-    string? VatNumber
-);
-
-public class CreateInvoiceRequestValidator : AbstractValidator<CreateInvoiceRequest>
+file class RequestValidator : AbstractValidator<CreateInvoice.Request>
 {
-    public CreateInvoiceRequestValidator()
+    public RequestValidator()
     {
         RuleFor(req => req.CustomerName).NotEmpty();
         RuleFor(req => req.StreetAndNumber).NotEmpty();

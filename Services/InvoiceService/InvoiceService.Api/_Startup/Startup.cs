@@ -1,3 +1,5 @@
+using Invoicing.Services.InvoiceService.Api.Invoices;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Environment.ApplicationName = "Invoicing Service";
@@ -15,14 +17,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseReDoc(config =>
-    {
-        config.DocumentTitle = "Invoicing api";
-    });
 }
 
 app.UseHttpsRedirection();
 
-app.MapEndpoints();
+app.MapGroup("/invoices")
+   .MapInvoiceApi()
+   .WithTags("Invoices");
 
 app.Run();
