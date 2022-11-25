@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\InvoiceService.Domain\InvoiceService.Domain.csproj" />
+    <ProjectReference Include="..\InvoiceService.Data\InvoiceService.Data.csproj" />
   </ItemGroup>
 
 </Project>

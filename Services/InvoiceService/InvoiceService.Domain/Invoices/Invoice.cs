@@ -11,6 +11,14 @@ public class Invoice : EntityBase, IAggregateRoot
         return new Invoice(customer, Guid.NewGuid());
     }
 
+    public Invoice(Guid id, int? invoiceNumber, LocalDate? invoiceDate, Customer customer, IEnumerable<InvoiceLine> invoiceLines) : base(id)
+    {
+        InvoiceNumber = invoiceNumber;
+        InvoiceDate = invoiceDate;
+        Customer = customer;
+        InvoiceLines = new InvoiceLineCollection(invoiceLines);
+    }
+
     private Invoice(Customer customer, Guid id) : base(id)
     {
         Customer = customer;

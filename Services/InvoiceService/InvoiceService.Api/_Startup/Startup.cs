@@ -1,3 +1,4 @@
+using InvoiceService.Data.Setup;
 using Invoicing.Services.InvoiceService.Api.Invoices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.AddTelemetry();
+
+builder.Services.AddInvoiceServiceDataAccess(builder.Configuration.GetConnectionString("Invoices"));
 
 var app = builder.Build();
 
