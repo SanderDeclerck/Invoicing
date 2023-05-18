@@ -1,0 +1,35 @@
+@id = 18707f1f-4972-4eeb-b85a-34f035f32387
+
+### createInvoice request
+
+POST https://127.0.0.1:5000/sdsoftware/invoices
+Content-Type: application/json
+
+{
+  "customerName": "Cummerata Inc",
+  "streetAndNumber": "1234 Main St",
+  "postalCode": "12345",
+  "city": "New York",
+  "country": "USA",
+  "vatNumber": "123456789"
+}
+
+### getInvoice request
+
+GET https://127.0.0.1:5000/sdsoftware/invoices/{{id}}
+
+### addInvoiceLine request
+
+POST https://127.0.0.1:5000/sdsoftware/invoices/{{id}}/lines
+Content-Type: application/json
+
+{
+  "description": "Test",
+  "quantity": 1,
+  "unitPrice": 100,
+  "vatPercentage": 21
+}
+
+### finalizeInvoice request
+
+PATCH https://127.0.0.1:5000/sdsoftware/invoices/{{id}}/finalize
