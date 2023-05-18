@@ -18,7 +18,7 @@ public static class Telemetry
         builder.Logging.AddOpenTelemetry(logging => 
         {
             logging.SetResourceBuilder(resourceBuilder)
-                   .AddConsoleExporter();
+                   ;
 
             if (honeycombConfiguration != null) 
             {
@@ -48,7 +48,7 @@ public static class Telemetry
                            "System.Net.NameResolution",
                            "System.Net.Security");
                    })
-                   .AddConsoleExporter();
+                   ;
 
             if (honeycombConfiguration != null) 
             {
@@ -71,7 +71,7 @@ public static class Telemetry
                     };
                   })
                   .AddHttpClientInstrumentation()
-                  .AddConsoleExporter();
+                  ;
 
             if (honeycombConfiguration != null) 
             {

@@ -38,11 +38,12 @@ public static class InvoiceMapper
         return invoice;
     }
 
-    public static InvoiceEntity MapToEntity(this Invoice invoice)
+    public static InvoiceEntity MapToEntity(this Invoice invoice, string tenantId)
     {
         var invoiceEntity = new InvoiceEntity
         {
             Id = invoice.Id,
+            TenantId = tenantId,
             InvoiceNumber = invoice.InvoiceNumber,
             InvoiceDate = invoice.InvoiceDate,
             Customer = new CustomerEntity

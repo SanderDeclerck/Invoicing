@@ -13,6 +13,10 @@ public static class InvoiceApi
         group.MapGet("/{id:guid}", GetInvoiceById.Handle)
              .WithName(GetInvoiceByIdRouteName);
 
+        group.MapPost("/{id:guid}/lines", AddInvoiceLine.Handle);
+
+        group.MapPatch("/{id:guid}/finalize", FinalizeInvoice.Handle);
+
         return group;
     }
 }

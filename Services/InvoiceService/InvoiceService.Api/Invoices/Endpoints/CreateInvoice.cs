@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Invoicing.Services.InvoiceService.Invoices.Domain;
@@ -10,7 +9,6 @@ namespace Invoicing.Services.InvoiceService.Api.Invoices;
 public static class CreateInvoice
 {
     public record Request(
-        [Required]
         string CustomerName,
         string StreetAndNumber,
         string PostalCode,
