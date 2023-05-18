@@ -1,0 +1,36 @@
+name: 🚀 Invoicing api
+on: [push]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ResourceGroupName: rg-invoicing
+
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: '📥 Checkout code'
+        uses: actions/checkout@main
+
+      - name: '🔑 Login to Azure'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+      - name: '🖥️ Create resource group'
+        run: |
+          az group create --name ${{ env.ResourceGroupName }} --location northeurope
+
+
+      - name: '🖥️ Deploy azure infrastructure'
+        uses: azure/arm-deploy@v1
+        with:
+          resourceGroupName: ${{ env.ResourceGroupName }}
+          template: ./Services/InvoiceService/infrastructure/main.bicep
+          parameters: name=invoicing-svc-13fl5u

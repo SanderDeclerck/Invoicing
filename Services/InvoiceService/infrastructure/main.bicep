@@ -9,7 +9,7 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     databaseAccountOfferType: 'Standard'
     locations: [
       {
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: location
       }
     ]
