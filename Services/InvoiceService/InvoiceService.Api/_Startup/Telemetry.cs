@@ -42,6 +42,7 @@ public static class Telemetry
                         };
                       })
                       .AddHttpClientInstrumentation()
+                      .AddSource(InvoiceService.Data.Telemetry.ActivitySourceName)
                       ;
 
                 if (honeycombConfiguration != null) 

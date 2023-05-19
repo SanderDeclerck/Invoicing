@@ -3,6 +3,7 @@ using InvoiceService.Data.InvoiceNumberSources.Entities;
 using Invoicing.Services.InvoiceService.Domain.InvoiceNumberSources;
 using Invoicing.Services.InvoiceService.Domain.InvoiceNumberSources.Invoices;
 using Microsoft.Azure.Cosmos;
+using static InvoiceService.Data.Telemetry;
 
 namespace InvoiceService.Data.InvoiceNumberSources;
 
@@ -21,6 +22,7 @@ public class InvoiceNumberSourceRepository : IInvoiceNumberSourceRepository
 
     public async Task<InvoiceNumberSource> GetOrCreate(CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("InvoiceNumberSourceRepository.GetOrCreate", System.Diagnostics.ActivityKind.Internal);
         var tenantId = _currentTenantProvider.GetTenantId();
         
         var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.tenantId = @tenantId ORDER BY c._ts DESC")
@@ -47,6 +49,7 @@ public class InvoiceNumberSourceRepository : IInvoiceNumberSourceRepository
 
     public async Task Update(InvoiceNumberSource invoiceNumberSource, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("InvoiceNumberSourceRepository.Update", System.Diagnostics.ActivityKind.Internal);
         var tenantId = _currentTenantProvider.GetTenantId();
         var entity = new InvoiceNumberSourceEntity
         {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,8 @@ namespace Invoicing.Services.InvoiceService.Api.Invoices;
 
 public static class GetInvoiceById 
 {
+    public class Log {}
+
     public record Response(
         Guid Id,
         ResponseCustomer Customer,
@@ -42,13 +45,17 @@ public static class GetInvoiceById
     public static async Task<Results<Ok<Response>, NotFound>> Handle(
         [FromRoute] Guid id,
         [FromServices] IInvoiceRepository repository,
+        [FromServices] ILogger<Log> logger,
         HttpContext httpContext,
         CancellationToken cancellationToken)
     {
+        Activity.Current?.AddTag("app.invoiceId", id.ToString());
+        
         var invoice = await repository.GetById(id, cancellationToken);
 
         if (invoice == null)
         {
+            logger.LogWarning($"Invoice {id} not found");
             return TypedResults.NotFound();
         }
 
