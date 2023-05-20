@@ -23,3 +23,48 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
     ]
   }
 }
+
+resource invoiceDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
+  name: 'InvoiceService'
+  parent: cosmosDb
+  location: location
+  properties: {
+    resource: {
+      id: 'invoices'
+    }
+  }
+}
+
+resource invoicesDatabaseContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'Invoices'
+  parent: invoiceDatabase
+  location: location
+  properties: {
+    resource: {
+      id: 'invoices'
+      partitionKey: {
+        paths: [
+          '/tenantId'
+        ]
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
+resource invoiceNumberSourcesContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'InvoiceNumberSources'
+  parent: invoiceDatabase
+  location: location
+  properties: {
+    resource: {
+      id: 'invoiceNumberSources'
+      partitionKey: {
+        paths: [
+          '/tenantId'
+        ]
+        kind: 'Hash'
+      }
+    }
+  }
+}
