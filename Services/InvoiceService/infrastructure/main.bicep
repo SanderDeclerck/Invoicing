@@ -30,7 +30,7 @@ resource invoiceDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@202
   location: location
   properties: {
     resource: {
-      id: 'invoices'
+      id: 'InvoiceService'
     }
   }
 }
@@ -41,7 +41,7 @@ resource invoicesDatabaseContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDat
   location: location
   properties: {
     resource: {
-      id: 'invoices'
+      id: 'Invoices'
       partitionKey: {
         paths: [
           '/tenantId'
@@ -58,7 +58,7 @@ resource invoiceNumberSourcesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
   location: location
   properties: {
     resource: {
-      id: 'invoiceNumberSources'
+      id: 'InvoiceNumberSources'
       partitionKey: {
         paths: [
           '/tenantId'
