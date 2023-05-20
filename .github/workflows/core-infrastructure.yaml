@@ -1,4 +1,4 @@
-name: 🚀 Invoicing api
+name: 🚀 Core infrastructure
 on:
   push:
     branches:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 env:
-  ResourceGroupName: rg-invoicing-invoiceservice
+  ResourceGroupName: rg-invoicing-core
 
 jobs: 
   build-and-deploy:
@@ -37,4 +37,4 @@ jobs:
         with:
           resourceGroupName: ${{ env.ResourceGroupName }}
           template: ./Services/InvoiceService/infrastructure/main.bicep
-          parameters: name=invoicing-svc-13fl5u
+          parameters: name=core-13fl5u
