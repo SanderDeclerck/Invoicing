@@ -36,5 +36,5 @@ jobs:
         uses: azure/arm-deploy@v1
         with:
           resourceGroupName: ${{ env.ResourceGroupName }}
-          template: ./Services/InvoiceService/infrastructure/main.bicep
+          template: ./core-infrastructure/main.bicep
           parameters: name=core-13fl5u
