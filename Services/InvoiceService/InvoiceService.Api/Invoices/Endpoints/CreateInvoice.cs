@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using FluentValidation;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Invoicing.Services.InvoiceService.Invoices.Domain;
@@ -8,6 +9,8 @@ namespace Invoicing.Services.InvoiceService.Api.Invoices;
 
 public static class CreateInvoice
 {
+    public class Log { }
+
     public record Request(
         string CustomerName,
         string StreetAndNumber,
@@ -24,12 +27,14 @@ public static class CreateInvoice
     public static async Task<Results<CreatedAtRoute, ValidationProblem>> Handle(
         [FromBody] Request request,
         [FromServices] IInvoiceRepository repository,
+        [FromServices] ILogger<Log> logger,
         CancellationToken cancellationToken)
     {
         var validationResult = new RequestValidator().Validate(request);
 
         if (!validationResult.IsValid)
         {
+            logger.LogWarning($"Invalid request: {string.Join(", ", validationResult.Errors)}");
             return TypedResults.ValidationProblem(validationResult.ToDictionary());
         }
 
@@ -37,6 +42,8 @@ public static class CreateInvoice
         var invoice = Invoice.CreateInvoiceForCustomer(customer);
 
         await repository.Insert(invoice, cancellationToken);
+
+        Activity.Current?.AddTag("app.invoiceId", invoice.Id.ToString());
 
         return TypedResults.CreatedAtRoute(InvoiceApi.GetInvoiceByIdRouteName, new { id = invoice.Id });
     }

@@ -30,58 +30,59 @@ public static class Telemetry
             }
         });
 
-        builder.Services.AddOpenTelemetryMetrics(metrics => 
-        {
-            metrics.SetResourceBuilder(resourceBuilder)
-                   .AddAspNetCoreInstrumentation()
-                   .AddRuntimeInstrumentation()
-                   .AddHttpClientInstrumentation()
-                   .AddEventCountersInstrumentation(c =>
-                   {
-                       // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters
-                       c.AddEventSources(
-                           "Microsoft.AspNetCore.Hosting",
-                           // There's currently a bug preventing this from working
-                           // "Microsoft-AspNetCore-Server-Kestrel"
-                           "System.Net.Http", 
-                           "System.Net.Sockets",
-                           "System.Net.NameResolution",
-                           "System.Net.Security");
-                   })
-                   ;
-
-            if (honeycombConfiguration != null) 
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(traces => 
             {
-                metrics.AddOtlpExporter(options => 
-                {
-                    options.Endpoint = honeycombConfiguration.Value.Endpoint;
-                    options.Headers = honeycombConfiguration.Value.Headers;
-                });
-            }
-        });
+                traces.SetResourceBuilder(resourceBuilder)
+                      .AddAspNetCoreInstrumentation(options => 
+                      {
+                        options.EnrichWithHttpResponse = (activity, response) => 
+                        {
+                            SetActivityRoute(activity, response);
+                        };
+                      })
+                      .AddHttpClientInstrumentation()
+                      .AddSource(InvoiceService.Data.Telemetry.ActivitySourceName)
+                      ;
 
-        builder.Services.AddOpenTelemetryTracing(traces => 
-        {
-            traces.SetResourceBuilder(resourceBuilder)
-                  .AddAspNetCoreInstrumentation(options => 
-                  {
-                    options.EnrichWithHttpResponse = (activity, response) => 
+                if (honeycombConfiguration != null) 
+                {
+                    traces.AddOtlpExporter(options => 
                     {
-                        SetActivityRoute(activity, response);
-                    };
-                  })
-                  .AddHttpClientInstrumentation()
-                  ;
-
-            if (honeycombConfiguration != null) 
+                        options.Endpoint = honeycombConfiguration.Value.Endpoint;
+                        options.Headers = honeycombConfiguration.Value.Headers;
+                    });
+                }
+            })
+            .WithMetrics(metrics => 
             {
-                traces.AddOtlpExporter(options => 
+                metrics.SetResourceBuilder(resourceBuilder)
+                       .AddAspNetCoreInstrumentation()
+                       .AddRuntimeInstrumentation()
+                       .AddHttpClientInstrumentation()
+                       .AddEventCountersInstrumentation(c =>
+                       {
+                           // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/available-counters
+                           c.AddEventSources(
+                               "Microsoft.AspNetCore.Hosting",
+                               // There's currently a bug preventing this from working
+                               // "Microsoft-AspNetCore-Server-Kestrel"
+                               "System.Net.Http", 
+                               "System.Net.Sockets",
+                               "System.Net.NameResolution",
+                               "System.Net.Security");
+                       })
+                       ;
+
+                if (honeycombConfiguration != null) 
                 {
-                    options.Endpoint = honeycombConfiguration.Value.Endpoint;
-                    options.Headers = honeycombConfiguration.Value.Headers;
-                });
-            }
-        });
+                    metrics.AddOtlpExporter(options => 
+                    {
+                        options.Endpoint = honeycombConfiguration.Value.Endpoint;
+                        options.Headers = honeycombConfiguration.Value.Headers;
+                    });
+                }
+            });
     }
 
     private static (Uri Endpoint, string Headers)? GetHoneycombConfiguration(IConfiguration configuration) 

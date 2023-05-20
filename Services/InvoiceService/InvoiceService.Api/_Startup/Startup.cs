@@ -45,6 +45,7 @@ app.UseMiddleware<InitializeFromHttpContextMiddleware>();
 
 app.MapGroup("/{tenantId:alpha}/invoices")
    .MapInvoiceApi()
-   .WithTags("Invoices");
+   .WithTags("Invoices")
+   .AddEndpointFilter<TracingActionFilter>();
 
 app.Run();

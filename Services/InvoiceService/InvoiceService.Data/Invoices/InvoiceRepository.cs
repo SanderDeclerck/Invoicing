@@ -3,6 +3,7 @@ using InvoiceService.Data.Invoices.Mappers;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Invoicing.Services.InvoiceService.Invoices.Domain;
 using Microsoft.Azure.Cosmos;
+using static InvoiceService.Data.Telemetry;
 
 namespace InvoiceService.Data.Invoices;
 public class InvoiceRepository : IInvoiceRepository
@@ -20,6 +21,7 @@ public class InvoiceRepository : IInvoiceRepository
 
     public async Task<Invoice?> GetById(Guid id, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("InvoiceRepository.GetById", System.Diagnostics.ActivityKind.Internal);
         try
         {
             var tenant = _currentTenantProvider.GetTenantId();
@@ -34,6 +36,7 @@ public class InvoiceRepository : IInvoiceRepository
 
     public async Task Insert(Invoice invoice, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("InvoiceRepository.Insert", System.Diagnostics.ActivityKind.Internal);
         var tenantId = _currentTenantProvider.GetTenantId();
         var entity = invoice.MapToEntity(tenantId);
         await Container.CreateItemAsync(entity, new PartitionKey(tenantId), cancellationToken: cancellationToken);
@@ -41,6 +44,7 @@ public class InvoiceRepository : IInvoiceRepository
 
     public async Task Update(Invoice invoice, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("InvoiceRepository.Update", System.Diagnostics.ActivityKind.Internal);
         var tenantId = _currentTenantProvider.GetTenantId();
         var entity = invoice.MapToEntity(tenantId);
         await Container.UpsertItemAsync(entity, new PartitionKey(tenantId), cancellationToken: cancellationToken);
