@@ -71,7 +71,6 @@ resource invoiceNumberSourcesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
   }
 }
 
-
 module keyVaultSecret '../../../core-infrastructure/keyvault/add-secret.bicep' = {
   name: 'InvoiceServiceCosmosDbConnectionString'
   scope: resourceGroup(keyVaultResourceGroup)

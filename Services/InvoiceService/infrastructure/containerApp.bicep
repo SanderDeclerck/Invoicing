@@ -60,3 +60,12 @@ module acrRoleAssignment '../../../core-infrastructure/roleAssignments/acrPull.b
     principalType: 'ServicePrincipal'
   }
 }
+
+module keyVaultRbac '../../../core-infrastructure/roleAssignments/keyvaultSecretsUser.bicep' = {
+  name: 'InvoiceServiceCosmosDbConnectionString'
+  scope: resourceGroup(coreInfrastructure.resourceGroup)
+  params: {
+    principalId: containerApp.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
