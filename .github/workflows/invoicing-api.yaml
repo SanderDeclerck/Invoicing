@@ -10,7 +10,8 @@ permissions:
   contents: read
 
 jobs: 
-  build-and-deploy:
+  deploy-infrastructure:
+    name: '🖥️ Deploy azure infrastructure'
     runs-on: ubuntu-latest
     steps:
       
@@ -37,3 +38,27 @@ jobs:
             --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
             --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
                          invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
+
+  build-and-push-to-registry:
+    name: '📦 Build and push to registry'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: '📥 Checkout code'
+        uses: actions/checkout@main
+
+      - name: '⚙️ Extract the acr name from infrastructure json'
+        run: |
+          acrName=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.containerRegistryName' )
+          echo "ACR_NAME=$acrName" >> "$GITHUB_ENV"
+
+      - name: '🔑 Login to Azure Container Registry'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: '🔑 Login to azure container registry'
+        run: |
+          az acr login --name ${{ vars.ACR_NAME }}

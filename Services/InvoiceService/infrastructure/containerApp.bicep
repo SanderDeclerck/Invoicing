@@ -30,22 +30,5 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
         ]
       }
     }
-    template: {
-      revisionSuffix: 'v1'
-      containers: [
-        {
-          name: containerAppName
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-          resources: {
-            cpu: json('0.25')
-            memory: '0.5Gi'
-          }
-        }
-      ]
-      scale: {
-        minReplicas: 1
-        maxReplicas: 3
-      }
-    }
   }
 }

@@ -10,7 +10,8 @@ permissions:
   contents: read
 
 jobs: 
-  build-and-deploy:
+  deploy-infrastructure:
+    name: '🖥️ Deploy azure infrastructure'
     runs-on: ubuntu-latest
     steps:
       
