@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       
+      - run: echo '${{ env.CORE_INFRASTRUCTURE }}'
+      
       - name: '📥 Checkout code'
         uses: actions/checkout@main
 
@@ -37,4 +39,4 @@ jobs:
         with:
           resourceGroupName: ${{ env.ResourceGroupName }}
           template: ./core-infrastructure/main.bicep
-          parameters: name=core-13fl5u
+          parameters: name=core-13fl5u coreInfrastructure='{  }'
