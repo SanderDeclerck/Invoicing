@@ -1,5 +1,7 @@
-param name string
 param location string = resourceGroup().location
+param name string
+param keyVaultName string
+param keyVaultResourceGroup string
 
 resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: name
@@ -66,5 +68,16 @@ resource invoiceNumberSourcesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
         kind: 'Hash'
       }
     }
+  }
+}
+
+
+module keyVaultSecret '../../../core-infrastructure/keyvault/add-secret.bicep' = {
+  name: 'InvoiceServiceCosmosDbConnectionString'
+  scope: resourceGroup(keyVaultResourceGroup)
+  params: {
+    key: 'InvoiceServiceCosmosDbConnectionString'
+    keyVaultName: keyVaultName
+    value: 'AccountEndpoint=${cosmosDb.properties.documentEndpoint};AccountKey=${cosmosDb.listKeys().primaryMasterKey}'
   }
 }

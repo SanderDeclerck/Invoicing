@@ -4,6 +4,7 @@ param coreInfrastructure object = {
   logAnalyticsName: ''
   containerAppEnvName: ''
   containerRegistryName: ''
+  keyVaultName: ''
 }
 param invoiceServiceInfrastructure object = {
   resourceGroup: ''
@@ -16,6 +17,8 @@ module database 'database.bicep' = {
   params: {
     name: invoiceServiceInfrastructure.databaseName
     location: location
+    keyVaultName: coreInfrastructure.keyVaultName
+    keyVaultResourceGroup: coreInfrastructure.resourceGroup
   }
 }
 
