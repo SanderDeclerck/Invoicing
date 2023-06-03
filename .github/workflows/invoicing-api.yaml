@@ -93,8 +93,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: '🚀 Deploy to container apps'
-      #   run: |
-      #     az containerapp update -n ${{ env.CONTAINER_APP }} \
-      #                            -g ${{ env.RESOURCE_GROUP }} \
-      #                            --image ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
+      - name: '🚀 Deploy to container apps'
+        run: |
+          az containerapp update -n ${{ env.CONTAINER_APP }} \
+                                 -g ${{ env.RESOURCE_GROUP }} \
+                                 --image ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
