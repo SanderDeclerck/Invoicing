@@ -29,15 +29,10 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   
-      - name: '🖥️ Create resource group'
-        run: |
-          echo ${{ env.RESOURCE_GROUP }}
-          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
-
-
       - name: '🖥️ Deploy azure infrastructure'
-        uses: azure/arm-deploy@v1
-        with:
-          resourceGroupName: ${{ env.RESOURCE_GROUP }}
-          template: ./core-infrastructure/main.bicep
-          parameters: coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}'
+        run: |
+          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file  ./core-infrastructure/main.bicep \
+            --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}'
