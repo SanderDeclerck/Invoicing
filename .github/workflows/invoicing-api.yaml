@@ -67,5 +67,5 @@ jobs:
         run: |
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest \
                        -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }} \
-                       -f ./Services/InvoiceService/InvoiceServices.Api/Dockerfile \
+                       -f ./Services/InvoiceService/InvoiceService.Api/Dockerfile \
                        .
