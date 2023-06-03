@@ -31,4 +31,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-pr
   sku: {
     name: 'Basic'
   }
+  properties: {
+    adminUserEnabled: true
+  }
 }
