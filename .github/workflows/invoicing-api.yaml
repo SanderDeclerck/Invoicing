@@ -9,9 +9,6 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  ResourceGroupName: rg-invoicing-invoiceservice
-
 jobs: 
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -19,6 +16,11 @@ jobs:
       
       - name: '📥 Checkout code'
         uses: actions/checkout@main
+      
+      - name: '⚙️ Extract the resource group name from infrastructure json'
+        run: |
+          resourcegroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"
 
       - name: '🔑 Login to Azure'
         uses: azure/login@v1
@@ -29,12 +31,9 @@ jobs:
   
       - name: '🖥️ Create resource group'
         run: |
-          az group create --name ${{ env.ResourceGroupName }} --location northeurope
-
-
-      - name: '🖥️ Deploy azure infrastructure'
-        uses: azure/arm-deploy@v1
-        with:
-          resourceGroupName: ${{ env.ResourceGroupName }}
-          template: ./Services/InvoiceService/infrastructure/main.bicep
-          parameters: name=invoicing-svc-13fl5u
+          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
+            --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
+                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'

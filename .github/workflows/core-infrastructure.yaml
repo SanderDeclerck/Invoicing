@@ -17,7 +17,7 @@ jobs:
       - name: '📥 Checkout code'
         uses: actions/checkout@main
       
-      - name: '⚙️ Extract the resource group name from core infrastructure'
+      - name: '⚙️ Extract the resource group name from infrastructure json'
         run: |
           resourcegroup=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
           echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"

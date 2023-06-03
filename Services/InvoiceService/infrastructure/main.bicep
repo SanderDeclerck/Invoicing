@@ -1,10 +1,20 @@
-param name string
 param location string = resourceGroup().location
+param coreInfrastructure object = {
+  resourceGroup: ''
+  logAnalyticsName: ''
+  containerAppEnvName: ''
+  containerRegistryName: ''
+}
+param invoiceServiceInfrastructure object = {
+  resourceGroup: ''
+  databaseName: ''
+  containerAppName: ''
+}
 
 module database 'database.bicep' = {
-  name: 'database'
+  name: invoiceServiceInfrastructure.databaseName
   params: {
-    name: name
+    name: invoiceServiceInfrastructure.databaseName
     location: location
   }
 }
