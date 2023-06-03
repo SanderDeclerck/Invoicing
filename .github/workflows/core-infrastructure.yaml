@@ -9,20 +9,18 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  ResourceGroupName: rg-invoicing-core
-
 jobs: 
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       
-      - run: |
-          resourcegroup=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
-          echo $resourcegroup
-      
       - name: '📥 Checkout code'
         uses: actions/checkout@main
+      
+      - name: '⚙️ Extract the resource group name from core infrastructure'
+        run: |
+          resourcegroup=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"
 
       - name: '🔑 Login to Azure'
         uses: azure/login@v1
@@ -33,7 +31,8 @@ jobs:
   
       - name: '🖥️ Create resource group'
         run: |
-          az group create --name ${{ env.ResourceGroupName }} --location northeurope
+          echo ${{ env.RESOURCE_GROUP }}
+          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
 
 
       - name: '🖥️ Deploy azure infrastructure'
