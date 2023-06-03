@@ -19,7 +19,7 @@ jobs:
       
       - run: |
           resourcegroup=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
-          echo $resourceGroup
+          echo $resourcegroup
       
       - name: '📥 Checkout code'
         uses: actions/checkout@main
