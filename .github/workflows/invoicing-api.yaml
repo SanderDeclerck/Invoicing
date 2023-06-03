@@ -83,11 +83,15 @@ jobs:
       - name: '📥 Checkout code'
         uses: actions/checkout@main
 
-      - name: '⚙️ Extract the container app name and resource group from infrastructure json'
+      - name: '⚙️ Extract the container app name, resource group and acr name from infrastructure json'
         run: |
           containerApp=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.containerAppName' )
           echo "CONTAINER_APP=$containerApp" >> "$GITHUB_ENV"
           resourceGroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo "RESOURCE_GROUP=$resourceGroup" >> "$GITHUB_ENV"
+          acrName=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.containerRegistryName' )
+          echo "ACR_NAME=$acrName" >> "$GITHUB_ENV"
+
 
       - name: '🔑 Login to Azure'
         uses: azure/login@v1
