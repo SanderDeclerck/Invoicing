@@ -4,6 +4,7 @@ param coreInfrastructure object = {
   logAnalyticsName: ''
   containerAppEnvName: ''
   containerRegistryName: ''
+  keyVaultName: ''
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
@@ -38,5 +39,17 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-pr
   }
   properties: {
     adminUserEnabled: true
+  }
+}
+
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' = {
+  name: coreInfrastructure.keyVaultName
+  location: location
+  properties: {
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+    tenantId: subscription().tenantId
   }
 }
