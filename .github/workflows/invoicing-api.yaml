@@ -46,8 +46,6 @@ jobs:
     steps:
       - name: '📥 Checkout code'
         uses: actions/checkout@main
-      
-      - run: echo ${{ vars.CORE_INFRASTRUCTURE.containerRegistryName }}
 
       - name: '⚙️ Extract the acr name from infrastructure json'
         run: |
@@ -64,3 +62,10 @@ jobs:
       - name: '🔑 Login to Azure Container Registry'
         run: |
           az acr login --name ${{ env.ACR_NAME }}
+
+      - name: '🛠️ Build and push to registry'
+        run: |
+          cd ./Services/InvoiceService/InvoiceService.Api
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest \
+                       -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }} \
+                       .
