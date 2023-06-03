@@ -17,7 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       
-      - run: echo '${{ vars.CORE_INFRASTRUCTURE }}'
+      - run: |
+          resourcegroup=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo $resourceGroup
       
       - name: '📥 Checkout code'
         uses: actions/checkout@main
