@@ -12,9 +12,18 @@ param invoiceServiceInfrastructure object = {
 }
 
 module database 'database.bicep' = {
-  name: invoiceServiceInfrastructure.databaseName
+  name: 'database'
   params: {
     name: invoiceServiceInfrastructure.databaseName
     location: location
+  }
+}
+
+module containerApp 'containerApp.bicep' = {
+  name: 'containerApp'
+  params: {
+    location: location
+    coreInfrastructure: coreInfrastructure
+    containerAppName: invoiceServiceInfrastructure.containerAppName
   }
 }
