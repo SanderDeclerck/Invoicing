@@ -39,6 +39,7 @@ jobs:
             --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
                          invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
 
+
   build-and-push-to-registry:
     name: '🛠️ Build and push to registry'
     runs-on: ubuntu-latest
@@ -72,6 +73,7 @@ jobs:
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
 
+
   deploy-to-container-apps:
     name: '🚀 Deploy to container apps'
     runs-on: ubuntu-latest
@@ -95,6 +97,7 @@ jobs:
 
       - name: '🚀 Deploy to container apps'
         run: |
+          az extension add --name containerapp --upgrade
           az containerapp update -n ${{ env.CONTAINER_APP }} \
                                  -g ${{ env.RESOURCE_GROUP }} \
                                  --image ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
