@@ -40,7 +40,7 @@ jobs:
                          invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
 
   build-and-push-to-registry:
-    name: '📦 Build and push to registry'
+    name: '🛠️ Build and push to registry'
     runs-on: ubuntu-latest
     
     steps:
@@ -65,7 +65,7 @@ jobs:
 
       - name: '🛠️ Build and push to registry'
         run: |
-          cd ./Services/InvoiceService/InvoiceService.Api
           docker build -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest \
                        -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }} \
+                       -f ./Services/InvoiceService/InvoiceServices.Api/Dockerfile \
                        .

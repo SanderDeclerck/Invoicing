@@ -3,18 +3,18 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY ../../../Invoicing.sln .
-COPY ../../../Services/InvoiceService/InvoiceService.Api/*.csproj ./Services/InvoiceService/InvoiceService.Api/
-COPY ../../../Services/InvoiceService/InvoiceService.Data/*.csproj ./Services/InvoiceService/InvoiceService.Data/
-COPY ../../../Services/InvoiceService/InvoiceService.Domain/*.csproj ./Services/InvoiceService/InvoiceService.Domain/
-COPY ../../../Shared/Invoicing.SharedKernel/*.csproj ./Shared/Invoicing.SharedKernel/
+COPY Invoicing.sln .
+COPY Services/InvoiceService/InvoiceService.Api/*.csproj ./Services/InvoiceService/InvoiceService.Api/
+COPY Services/InvoiceService/InvoiceService.Data/*.csproj ./Services/InvoiceService/InvoiceService.Data/
+COPY Services/InvoiceService/InvoiceService.Domain/*.csproj ./Services/InvoiceService/InvoiceService.Domain/
+COPY Shared/Invoicing.SharedKernel/*.csproj ./Shared/Invoicing.SharedKernel/
 RUN dotnet restore
 
 # copy everything else and build app
-COPY ../../../Services/InvoiceService/InvoiceService.Api/. ./Services/InvoiceService/InvoiceService.Api/
-COPY ../../../Services/InvoiceService/InvoiceService.Data/. ./Services/InvoiceService/InvoiceService.Data/
-COPY ../../../Services/InvoiceService/InvoiceService.Domain/. ./Services/InvoiceService/InvoiceService.Domain/
-COPY ../../../Shared/Invoicing.SharedKernel/. ./Shared/Invoicing.SharedKernel/
+COPY Services/InvoiceService/InvoiceService.Api/. ./Services/InvoiceService/InvoiceService.Api/
+COPY Services/InvoiceService/InvoiceService.Data/. ./Services/InvoiceService/InvoiceService.Data/
+COPY Services/InvoiceService/InvoiceService.Domain/. ./Services/InvoiceService/InvoiceService.Domain/
+COPY Shared/Invoicing.SharedKernel/. ./Shared/Invoicing.SharedKernel/
 WORKDIR /source/Services/InvoiceService/InvoiceService.Api
 RUN dotnet publish -c release -o /app --no-restore
 
