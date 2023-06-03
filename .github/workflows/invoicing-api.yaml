@@ -46,19 +46,21 @@ jobs:
     steps:
       - name: '📥 Checkout code'
         uses: actions/checkout@main
+      
+      - run: echo ${{ vars.CORE_INFRASTRUCTURE.containerRegistryName }}
 
       - name: '⚙️ Extract the acr name from infrastructure json'
         run: |
           acrName=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.containerRegistryName' )
           echo "ACR_NAME=$acrName" >> "$GITHUB_ENV"
 
-      - name: '🔑 Login to Azure Container Registry'
+      - name: '🔑 Login to Azure'
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: '🔑 Login to azure container registry'
+      - name: '🔑 Login to Azure Container Registry'
         run: |
-          az acr login --name ${{ vars.ACR_NAME }}
+          az acr login --name ${{ env.ACR_NAME }}
