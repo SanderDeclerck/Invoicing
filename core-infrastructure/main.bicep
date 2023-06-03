@@ -24,3 +24,11 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-11-01-preview' 
     }
   }
 }
+
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
+  name: '${name}-acr'
+  location: location
+  sku: {
+    name: 'Basic'
+  }
+}
