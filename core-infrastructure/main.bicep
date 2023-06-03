@@ -1,8 +1,13 @@
-param name string
 param location string = resourceGroup().location
+param coreInfrastructure object = {
+  resourceGroup: ''
+  logAnalyticsName: ''
+  containerAppEnvName: ''
+  containerRegistryName: ''
+}
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-  name: '${name}-log'
+  name: coreInfrastructure.logAnalyticsName
   location: location
   properties: {
     sku: {
@@ -12,7 +17,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
 }
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-11-01-preview' = {
-  name: '${name}-env'
+  name: coreInfrastructure.containerAppEnvName
   location: location
   properties: {
     appLogsConfiguration: {
@@ -26,7 +31,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-11-01-preview' 
 }
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
-  name: '${replace(name, '-', '')}acr'
+  name: coreInfrastructure.containerRegistryName
   location: location
   sku: {
     name: 'Basic'

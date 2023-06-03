@@ -38,6 +38,6 @@ jobs:
       - name: '🖥️ Deploy azure infrastructure'
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: ${{ env.ResourceGroupName }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP }}
           template: ./core-infrastructure/main.bicep
-          parameters: name=core-13fl5u
+          parameters: coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}'
