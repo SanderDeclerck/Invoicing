@@ -15,6 +15,9 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-11-01-preview' 
 resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: containerAppName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     managedEnvironmentId: containerAppEnv.id
     configuration: {
@@ -47,5 +50,14 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
         maxReplicas: 3
       }
     }
+  }
+}
+
+module acrRoleAssignment '../../../core-infrastructure/roleAssignments/acrPull.bicep' = {
+  name: 'acrPull'
+  scope: resourceGroup(coreInfrastructure.resourceGroup)
+  params: {
+    principalId: containerApp.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }

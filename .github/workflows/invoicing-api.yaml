@@ -71,3 +71,30 @@ jobs:
                        .
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
+
+  deploy-to-container-apps:
+    name: '🚀 Deploy to container apps'
+    runs-on: ubuntu-latest
+    needs: [deploy-infrastructure, build-and-push-to-registry]
+
+    steps:
+      - name: '📥 Checkout code'
+        uses: actions/checkout@main
+
+      - name: '⚙️ Extract the container app name from infrastructure json'
+        run: |
+          containerApp=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.containerApp' )
+          echo "CONTAINER_APP=$containerApp" >> "$GITHUB_ENV"
+
+      - name: '🔑 Login to Azure'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # - name: '🚀 Deploy to container apps'
+      #   run: |
+      #     az containerapp update -n ${{ env.CONTAINER_APP }} \
+      #                            -g ${{ env.RESOURCE_GROUP }} \
+      #                            --image ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
