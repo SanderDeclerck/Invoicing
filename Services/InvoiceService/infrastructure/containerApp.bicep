@@ -19,11 +19,19 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   scope: resourceGroup(coreInfrastructure.resourceGroup)
 }
 
+resource containerAppUserIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'id-${containerAppName}'
+  location: location
+}
+
 resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   name: containerAppName
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${containerAppUserIdentity.id}': {}
+    }
   }
   properties: {
     managedEnvironmentId: containerAppEnv.id
@@ -98,13 +106,17 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
       }
     }
   }
+  dependsOn: [
+    acrRoleAssignment
+    keyVaultRbac
+  ]
 }
 
 module acrRoleAssignment '../../../core-infrastructure/roleAssignments/acrPull.bicep' = {
   name: 'acrPull'
   scope: resourceGroup(coreInfrastructure.resourceGroup)
   params: {
-    principalId: containerApp.identity.principalId
+    principalId: containerAppUserIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -113,7 +125,7 @@ module keyVaultRbac '../../../core-infrastructure/roleAssignments/keyvaultSecret
   name: 'InvoiceServiceCosmosDbConnectionString'
   scope: resourceGroup(coreInfrastructure.resourceGroup)
   params: {
-    principalId: containerApp.identity.principalId
+    principalId: containerAppUserIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
