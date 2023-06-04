@@ -20,35 +20,6 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
   }
   properties: {
     managedEnvironmentId: containerAppEnv.id
-    configuration: {
-      ingress: {
-        external: true
-        allowInsecure: false
-        targetPort: 80
-        traffic: [
-          {
-            latestRevision: true
-            weight: 100
-          }
-        ]
-      }
-    }
-    template: {
-      containers: [
-        {
-          name: containerAppName
-          image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-          resources: {
-            cpu: json('0.25')
-            memory: '0.5Gi'
-          }
-        }
-      ]
-      scale: {
-        minReplicas: 1
-        maxReplicas: 3
-      }
-    }
   }
 }
 
