@@ -47,17 +47,17 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
       ]
       secrets: [
         {
-          name: 'InvoiceServiceCosmosDbConnectionString'
+          name: 'invoiceservicecosmosdbconnectionstring'
           identity: 'system'
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/InvoiceServiceCosmosDbConnectionString'
         }
         {
-          name: 'HoneycombApiKey'
+          name: 'honeycombapikey'
           identity: 'system'
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombApiKey'
         }
         {
-          name: 'HoneycombUri'
+          name: 'honeycomburi'
           identity: 'system'
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombUri'
         }
@@ -79,15 +79,15 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             }
             {
               name: 'CONNECTIONSTRINGS__INVOICES'
-              secretRef: 'InvoiceServiceCosmosDbConnectionString'
+              secretRef: 'invoiceservicecosmosdbconnectionstring'
             }            
             {
               name: 'TELEMETRY__HONEYCOMB__APIKEY'
-              secretRef: 'HoneycombApiKey'
+              secretRef: 'honeycombapikey'
             }           
             {
               name: 'TELEMETRY__HONEYCOMB__URI'
-              secretRef: 'HoneycombUri'
+              secretRef: 'honeycomburi'
             }
           ]
         }
