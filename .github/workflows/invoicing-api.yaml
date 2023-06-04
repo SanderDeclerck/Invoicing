@@ -12,7 +12,7 @@ permissions:
 jobs:  
 
   build-and-push-to-registry:
-    name: '🛠️ Build Invoice Service'
+    name: '🛠️ Build and push Invoice Service'
     runs-on: ubuntu-latest
     
     steps:
@@ -72,5 +72,5 @@ jobs:
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
             --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
-                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
+                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' \
                          imageTag='${{ github.sha }}'
