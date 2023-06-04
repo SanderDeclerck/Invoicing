@@ -50,23 +50,23 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
       registries: [
         {
           server: '${coreInfrastructure.containerRegistryName}.azurecr.io'
-          identity: 'system'
+          identity: containerAppUserIdentity.id
         }
       ]
       secrets: [
         {
           name: 'invoiceservicecosmosdbconnectionstring'
-          identity: 'system'
+          identity: containerAppUserIdentity.id
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/InvoiceServiceCosmosDbConnectionString'
         }
         {
           name: 'honeycombapikey'
-          identity: 'system'
+          identity: containerAppUserIdentity.id
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombApiKey'
         }
         {
           name: 'honeycomburi'
-          identity: 'system'
+          identity: containerAppUserIdentity.id
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombUri'
         }
       ]
