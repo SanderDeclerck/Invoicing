@@ -98,6 +98,44 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
               secretRef: 'honeycomburi'
             }
           ]
+          probes: [
+            {
+              httpGet: {
+                path: '/healthz'
+                port: 80
+              }
+              initialDelaySeconds: 5
+              periodSeconds: 120
+              timeoutSeconds: 5
+              successThreshold: 1
+              failureThreshold: 3
+              type: 'Liveness'
+            }
+            {
+              httpGet: {
+                path: '/healthz'
+                port: 80
+              }
+              initialDelaySeconds: 5
+              periodSeconds: 30
+              timeoutSeconds: 5
+              successThreshold: 1
+              failureThreshold: 3
+              type: 'Readiness'
+            }
+            {
+              httpGet: {
+                path: '/healthz'
+                port: 80
+              }
+              initialDelaySeconds: 5
+              periodSeconds: 30
+              timeoutSeconds: 5
+              successThreshold: 1
+              failureThreshold: 3
+              type: 'Startup'
+            }
+          ]
         }
       ]
       scale: {
