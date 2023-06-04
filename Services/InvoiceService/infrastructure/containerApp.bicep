@@ -72,6 +72,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
       ]
     }
     template: {
+      revisionSuffix: imageTag
       containers: [
         {
           name: containerAppName
