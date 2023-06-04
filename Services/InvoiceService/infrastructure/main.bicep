@@ -1,25 +1,34 @@
-param name string
 param location string = resourceGroup().location
+param coreInfrastructure object = {
+  resourceGroup: ''
+  logAnalyticsName: ''
+  containerAppEnvName: ''
+  containerRegistryName: ''
+  keyVaultName: ''
+}
+param invoiceServiceInfrastructure object = {
+  resourceGroup: ''
+  databaseName: ''
+  containerAppName: ''
+}
+param imageTag string
 
-resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
-  name: '${name}-db'
-  location: location
-  kind: 'GlobalDocumentDB'
-  properties: {
-    databaseAccountOfferType: 'Standard'
-    locations: [
-      {
-        isZoneRedundant: false
-        locationName: location
-      }
-    ]
-    backupPolicy: {
-      type: 'Continuous'
-    }
-    capabilities: [
-      {
-        name: 'EnableServerless'
-      }
-    ]
+module database 'database.bicep' = {
+  name: 'database'
+  params: {
+    name: invoiceServiceInfrastructure.databaseName
+    location: location
+    keyVaultName: coreInfrastructure.keyVaultName
+    keyVaultResourceGroup: coreInfrastructure.resourceGroup
+  }
+}
+
+module containerApp 'containerApp.bicep' = {
+  name: 'containerApp'
+  params: {
+    location: location
+    coreInfrastructure: coreInfrastructure
+    containerAppName: invoiceServiceInfrastructure.containerAppName
+    imageTag: imageTag
   }
 }

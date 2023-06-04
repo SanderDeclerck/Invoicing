@@ -8,16 +8,54 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  ResourceGroupName: rg-invoicing
+jobs:  
 
-jobs: 
-  build-and-deploy:
+  build-and-push-to-registry:
+    name: '🛠️ Build and push Invoice Service'
     runs-on: ubuntu-latest
+    
+    steps:
+      - name: '📥 Checkout code'
+        uses: actions/checkout@main
+
+      - name: '⚙️ Extract the acr name from infrastructure json'
+        run: |
+          acrName=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.containerRegistryName' )
+          echo "ACR_NAME=$acrName" >> "$GITHUB_ENV"
+
+      - name: '🔑 Login to Azure'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: '🔑 Login to Azure Container Registry'
+        run: |
+          az acr login --name ${{ env.ACR_NAME }}
+
+      - name: '🛠️ Build and push to registry'
+        run: |
+          docker build -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest \
+                       -t ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }} \
+                       -f ./Services/InvoiceService/InvoiceService.Api/Dockerfile \
+                       .
+          docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest
+          docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
+
+  deploy:
+    name: '🖥️ Deploy Invoice Service'
+    runs-on: ubuntu-latest
+    needs: build-and-push-to-registry
     steps:
       
       - name: '📥 Checkout code'
         uses: actions/checkout@main
+      
+      - name: '⚙️ Extract the resource group name from infrastructure json'
+        run: |
+          resourcegroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"
 
       - name: '🔑 Login to Azure'
         uses: azure/login@v1
@@ -26,14 +64,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   
-      - name: '🖥️ Create resource group'
-        run: |
-          az group create --name ${{ env.ResourceGroupName }} --location northeurope
-
-
       - name: '🖥️ Deploy azure infrastructure'
-        uses: azure/arm-deploy@v1
-        with:
-          resourceGroupName: ${{ env.ResourceGroupName }}
-          template: ./Services/InvoiceService/infrastructure/main.bicep
-          parameters: name=invoicing-svc-13fl5u
+        run: |
+          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
+            --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
+                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' \
+                         imageTag='${{ github.sha }}'

@@ -2,6 +2,8 @@ using InvoiceService.Data;
 using InvoiceService.Data.Setup;
 using Invoicing.Services.InvoiceService.Api.Infrastructure;
 using Invoicing.Services.InvoiceService.Api.Invoices;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
@@ -25,6 +27,9 @@ builder.Services.ConfigureHttpJsonOptions(options => {
     options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 });
 
+// Health checks
+builder.Services.AddHealthChecks();
+
 builder.AddTelemetry();
 
 builder.Services.AddInvoiceServiceDataAccess(builder.Configuration.GetConnectionString("Invoices"));
@@ -47,5 +52,15 @@ app.MapGroup("/{tenantId:alpha}/invoices")
    .MapInvoiceApi()
    .WithTags("Invoices")
    .AddEndpointFilter<TracingActionFilter>();
+
+app.MapHealthChecks("/healthz", new HealthCheckOptions
+{
+    ResultStatusCodes = 
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    }
+});
 
 app.Run();
