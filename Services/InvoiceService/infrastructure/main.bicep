@@ -11,6 +11,7 @@ param invoiceServiceInfrastructure object = {
   databaseName: ''
   containerAppName: ''
 }
+param imageTag string
 
 module database 'database.bicep' = {
   name: 'database'
@@ -28,5 +29,6 @@ module containerApp 'containerApp.bicep' = {
     location: location
     coreInfrastructure: coreInfrastructure
     containerAppName: invoiceServiceInfrastructure.containerAppName
+    imageTag: imageTag
   }
 }

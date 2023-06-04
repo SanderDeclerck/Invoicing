@@ -9,39 +9,10 @@ permissions:
   id-token: write
   contents: read
 
-jobs: 
-  deploy-infrastructure:
-    name: '🖥️ Deploy azure infrastructure'
-    runs-on: ubuntu-latest
-    steps:
-      
-      - name: '📥 Checkout code'
-        uses: actions/checkout@main
-      
-      - name: '⚙️ Extract the resource group name from infrastructure json'
-        run: |
-          resourcegroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
-          echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"
-
-      - name: '🔑 Login to Azure'
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  
-      - name: '🖥️ Deploy azure infrastructure'
-        run: |
-          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
-          az deployment group create \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
-            --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
-                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
-
+jobs:  
 
   build-and-push-to-registry:
-    name: '🛠️ Build and push to registry'
+    name: '🛠️ Build Invoice Service'
     runs-on: ubuntu-latest
     
     steps:
@@ -73,25 +44,19 @@ jobs:
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:latest
           docker push ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }}
 
-
-  deploy-to-container-apps:
-    name: '🚀 Deploy to container apps'
+  deploy:
+    name: '🖥️ Deploy Invoice Service'
     runs-on: ubuntu-latest
-    needs: [deploy-infrastructure, build-and-push-to-registry]
-
+    needs: build-and-push-to-registry
     steps:
+      
       - name: '📥 Checkout code'
         uses: actions/checkout@main
-
-      - name: '⚙️ Extract the container app name, resource group and acr name from infrastructure json'
+      
+      - name: '⚙️ Extract the resource group name from infrastructure json'
         run: |
-          containerApp=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.containerAppName' )
-          echo "CONTAINER_APP=$containerApp" >> "$GITHUB_ENV"
-          resourceGroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
-          echo "RESOURCE_GROUP=$resourceGroup" >> "$GITHUB_ENV"
-          acrName=$( echo '${{ vars.CORE_INFRASTRUCTURE }}' | jq '.containerRegistryName' )
-          echo "ACR_NAME=$acrName" >> "$GITHUB_ENV"
-
+          resourcegroup=$( echo '${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}' | jq '.resourceGroup' )
+          echo "RESOURCE_GROUP=$resourcegroup" >> "$GITHUB_ENV"
 
       - name: '🔑 Login to Azure'
         uses: azure/login@v1
@@ -99,12 +64,13 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      # - name: '🚀 Deploy to container apps'
-      #   run: |
-      #     az extension add --name containerapp --upgrade
-      #     az containerapp update -n ${{ env.CONTAINER_APP }} \
-      #                            -g ${{ env.RESOURCE_GROUP }} \
-      #                            --image ${{ env.ACR_NAME }}.azurecr.io/invoice-service:${{ github.sha }} \
-      #                            --env-vars ASPNETCORE_ENVIRONMENT=Production \
-      #                            --env-vars ASPNETCORE_URLS=http://+:80
+  
+      - name: '🖥️ Deploy azure infrastructure'
+        run: |
+          az group create --name ${{ env.RESOURCE_GROUP }} --location northeurope
+          az deployment group create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --template-file  ./Services/InvoiceService/infrastructure/main.bicep \
+            --parameters coreInfrastructure='${{ vars.CORE_INFRASTRUCTURE }}' \
+                         invoiceServiceInfrastructure='${{ vars.INVOICE_SERVICE_INFRASTRUCTURE }}'
+                         imageTag='${{ github.sha }}'
