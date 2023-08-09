@@ -17,5 +17,12 @@
 			"installUsingApt": false
 		},
 		"ghcr.io/rchaganti/vsc-devcontainer-features/azurebicep:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csdevkit"
+			]
+		}
 	}
 }
