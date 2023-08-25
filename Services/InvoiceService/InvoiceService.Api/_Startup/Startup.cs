@@ -13,7 +13,9 @@ builder.Environment.ApplicationName = "Invoicing Service";
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.CustomSchemaIds(t => t.FullName?.Replace('+', '-'));
+});
 
 // Add current tenant provider
 builder.Services.AddScoped<RouteCurrentTenantProvider>();
