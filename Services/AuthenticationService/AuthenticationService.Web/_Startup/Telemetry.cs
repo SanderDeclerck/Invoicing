@@ -4,16 +4,17 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Logs;
 using System.Diagnostics;
 
+namespace AuthenticationService.Web.Startup;
+
 public static class Telemetry
 {
-    public const string ServiceName = "Authentication Service";
     public static readonly string? Version = typeof(Telemetry).Assembly.GetName().Version?.ToString();
 
     public static void AddTelemetry(this WebApplicationBuilder builder)
     {
         var honeycombConfiguration = GetHoneycombConfiguration(builder.Configuration);
 
-        var resourceBuilder = ResourceBuilder.CreateDefault().AddService(ServiceName, serviceVersion: Version);
+        var resourceBuilder = ResourceBuilder.CreateDefault().AddService(builder.Environment.ApplicationName, serviceVersion: Version);
 
         builder.Logging.AddOpenTelemetry(logging => 
         {
@@ -42,7 +43,6 @@ public static class Telemetry
                         };
                       })
                       .AddHttpClientInstrumentation()
-                      .AddSource(InvoiceService.Data.Telemetry.ActivitySourceName)
                       ;
 
                 if (honeycombConfiguration != null) 
