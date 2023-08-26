@@ -1,3 +1,5 @@
+global using AuthenticationService.Domain;
+
 using AuthenticationService.Web.Startup;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

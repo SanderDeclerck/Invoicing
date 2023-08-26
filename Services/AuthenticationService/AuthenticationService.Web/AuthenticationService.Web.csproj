@@ -22,4 +22,9 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Reference AuthenticationService.Domain -->
+    <ProjectReference Include="..\AuthenticationService.Domain\AuthenticationService.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
