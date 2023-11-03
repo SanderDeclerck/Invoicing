@@ -13,7 +13,11 @@ builder.Environment.ApplicationName = "Invoicing Service";
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Invoiceservice Api", Version = "v1" });
+    c.CustomSchemaIds(type => type.FullName?.Replace("+", "_"));
+});
 
 // Add current tenant provider
 builder.Services.AddScoped<RouteCurrentTenantProvider>();

@@ -1,8 +1,10 @@
-@id = 907b24e0-d4b6-42ca-8cbe-fd921ab8cc28
+@baseUrl = http://127.0.0.1:8000
+
+@id = 9bfed7e4-91d5-49ea-86de-004e1b8df903
 
 ### createInvoice request
 
-POST https://127.0.0.1:5000/sdsoftware/invoices
+POST {{baseUrl}}/sdsoftware/invoices
 Content-Type: application/json
 
 {
@@ -16,11 +18,11 @@ Content-Type: application/json
 
 ### getInvoice request
 
-GET https://127.0.0.1:5000/sdsoftware/invoices/{{id}}
+GET {{baseUrl}}/sdsoftware/invoices/{{id}}
 
 ### addInvoiceLine request
 
-POST https://127.0.0.1:5000/sdsoftware/invoices/{{id}}/lines
+POST {{baseUrl}}/sdsoftware/invoices/{{id}}/lines
 Content-Type: application/json
 
 {
@@ -32,4 +34,4 @@ Content-Type: application/json
 
 ### finalizeInvoice request
 
-PATCH https://127.0.0.1:5000/sdsoftware/invoices/{{id}}/finalize
+PATCH {{baseUrl}}/sdsoftware/invoices/{{id}}/finalize
