@@ -3,10 +3,14 @@
 	"image": "mcr.microsoft.com/devcontainers/base:0-focal",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8000],
+	"forwardPorts": [ 8000, 8001 ],
 	"portsAttributes": {
 		"8000": {
 			"label": "InvoiceService Api",
+			"onAutoForward": "notify"
+		},
+		"8001": {
+			"label": "UserService Web",
 			"onAutoForward": "notify"
 		}
 	},
