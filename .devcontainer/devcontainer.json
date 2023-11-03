@@ -3,7 +3,13 @@
 	"image": "mcr.microsoft.com/devcontainers/base:0-focal",
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	"forwardPorts": [8000],
+	"portsAttributes": {
+		"8000": {
+			"label": "InvoiceService Api",
+			"onAutoForward": "notify"
+		}
+	},
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "uname -a",
@@ -11,18 +17,23 @@
 	// Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 	"features": {
-		"ghcr.io/devcontainers/features/azure-cli:1": {},
-		"ghcr.io/devcontainers/features/dotnet:1": {
-			"version": "7.0",
-			"installUsingApt": false
+		"ghcr.io/devcontainers/features/azure-cli:1": {
+			"installBicep": true
 		},
-		"ghcr.io/rchaganti/vsc-devcontainer-features/azurebicep:1": {}
+		"ghcr.io/devcontainers/features/dotnet:2": {
+			"version": "8.0"
+		}
 	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"ms-vscode.vscode-node-azure-pack",
+				"GitHub.copilot",
+				"GitHub.vscode-github-actions",
+				"ms-dotnettools.vscode-dotnet-runtime",
 				"ms-dotnettools.csdevkit",
-				"Azurite.azurite"
+				"ms-dotnetools.csharp",
+				"humao.rest-client"
 			]
 		}
 	}
