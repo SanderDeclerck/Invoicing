@@ -39,7 +39,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
       ingress: {
         external: true
         allowInsecure: false
-        targetPort: 80
+        targetPort: 8080
         traffic: [
           {
             latestRevision: true
@@ -103,7 +103,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               httpGet: {
                 path: '/healthz'
-                port: 80
+                port: 8080
               }
               initialDelaySeconds: 5
               periodSeconds: 120
@@ -115,7 +115,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               httpGet: {
                 path: '/healthz'
-                port: 80
+                port: 8080
               }
               initialDelaySeconds: 5
               periodSeconds: 30
@@ -127,7 +127,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               httpGet: {
                 path: '/healthz'
-                port: 80
+                port: 8080
               }
               initialDelaySeconds: 5
               periodSeconds: 30
