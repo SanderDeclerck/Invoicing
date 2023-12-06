@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'core-infrastructure/**'
+      - '.github/workflows/core-infrastructure.yaml'
 
 permissions:
   id-token: write
