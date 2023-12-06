@@ -161,7 +161,7 @@ module acrRoleAssignment '../../../core-infrastructure/roleAssignments/acrPull.b
 }
 
 module keyVaultRbac '../../../core-infrastructure/roleAssignments/keyvaultSecretsUser.bicep' = {
-  name: 'InvoiceServiceCosmosDbConnectionString'
+  name: 'allowContainerAppToReadKeyVaultSecrets'
   scope: resourceGroup(coreInfrastructure.resourceGroup)
   params: {
     principalId: containerAppUserIdentity.properties.principalId
