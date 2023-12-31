@@ -4,6 +4,33 @@
     ViewData["Title"] = "User management";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to user management</h1>
-</div>
+<h1>SD Invoice: User management</h1>
+
+<p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">User name</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Tenant</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Nickname</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>@user.Tenant</td>
+                    <td>
+                        @* <a asp-page="./Edit" asp-route-id="@user.Id">Edit</a> |
+                        <a asp-page="./Delete" asp-route-id="@user.Id">Delete</a> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</p>

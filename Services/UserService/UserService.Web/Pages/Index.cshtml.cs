@@ -1,19 +1,29 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UserService.Web.HttpClients.Auth0ManagementApi;
 
 namespace UserService.Web.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel(Auth0ManagementApiClient auth0ManagementApiClient) : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    public List<UserModel> Users { get; private set; } = new();
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public async Task OnGetAsync()
     {
-        _logger = logger;
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            var users = await auth0ManagementApiClient.GetUsersAsync();
+
+            Users = users.Select(MapToModel).ToList();
+        }
     }
 
-    public void OnGet()
+    public UserModel MapToModel(User user)
     {
+        string? tenant = null;
+        user.AppMetadata?.TryGetValue("tenant", out tenant);
 
+        return new UserModel(user.Email, user.Name, user.Nickname, user.Picture, user.UserId, tenant ?? "Unknown");
     }
+
+    public record UserModel(string? Email, string? Name, string? Nickname, string? Picture, string? UserId, string Tenant);
 }

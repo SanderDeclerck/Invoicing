@@ -1,3 +1,6 @@
+using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using UserService.Web.Startup;
 
@@ -13,6 +16,8 @@ builder.Services.AddAuthorization(options =>
         .RequireAuthenticatedUser()
         .Build();
 });
+
+builder.AddCustomHttpClients();
 
 var app = builder.Build();
 
@@ -33,5 +38,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapGet("/logout", (HttpContext context) =>
+{
+    context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    context.SignOutAsync(Auth0Constants.AuthenticationScheme);
+    
+    return Results.Redirect("/");
+}).AllowAnonymous();
 
 app.Run();
