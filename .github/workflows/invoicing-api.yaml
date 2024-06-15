@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - add-invoice-pdf
     paths:
       - 'Services/InvoiceService/**'
       - '.github/workflows/invoicing-api.yaml'

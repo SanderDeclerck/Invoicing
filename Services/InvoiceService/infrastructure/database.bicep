@@ -71,6 +71,23 @@ resource invoiceNumberSourcesContainer 'Microsoft.DocumentDB/databaseAccounts/sq
   }
 }
 
+resource invoiceIssuerContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-04-15' = {
+  name: 'InvoiceIssuers'
+  parent: invoiceDatabase
+  location: location
+  properties: {
+    resource: {
+      id: 'InvoiceIssuer'
+      partitionKey: {
+        paths: [
+          '/tenantId'
+        ]
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
 module keyVaultSecret '../../../core-infrastructure/keyvault/add-secret.bicep' = {
   name: 'InvoiceServiceCosmosDbConnectionString'
   scope: resourceGroup(keyVaultResourceGroup)

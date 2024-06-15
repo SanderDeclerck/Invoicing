@@ -10,6 +10,7 @@ param invoiceServiceInfrastructure object = {
   resourceGroup: ''
   databaseName: ''
   containerAppName: ''
+  storageAccountName: ''
 }
 param imageTag string
 
@@ -30,5 +31,13 @@ module containerApp 'containerApp.bicep' = {
     coreInfrastructure: coreInfrastructure
     containerAppName: invoiceServiceInfrastructure.containerAppName
     imageTag: imageTag
+  }
+}
+
+module storageAccount 'storageAccount.bicep' = {
+  name: 'storageAccount'
+  params: {
+    storageAccountName: invoiceServiceInfrastructure.storageAccountName
+    location: location
   }
 }
