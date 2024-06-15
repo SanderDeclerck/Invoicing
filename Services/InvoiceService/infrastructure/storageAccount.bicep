@@ -23,7 +23,7 @@ resource logosContainer 'Microsoft.Storage/storageAccounts/blobServices/containe
 }
 
 module keyVaultSecret '../../../core-infrastructure/keyvault/add-secret.bicep' = {
-  name: 'InvoiceServiceCosmosDbConnectionString'
+  name: 'InvoiceServiceStorageAccountConnectionString'
   scope: resourceGroup(keyVaultResourceGroup)
   params: {
     key: 'InvoiceServiceStorageAccountConnectionString'
