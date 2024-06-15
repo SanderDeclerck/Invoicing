@@ -77,7 +77,7 @@ resource invoiceIssuerContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDataba
   location: location
   properties: {
     resource: {
-      id: 'InvoiceIssuer'
+      id: 'InvoiceIssuers'
       partitionKey: {
         paths: [
           '/tenantId'

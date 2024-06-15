@@ -39,5 +39,7 @@ module storageAccount 'storageAccount.bicep' = {
   params: {
     storageAccountName: invoiceServiceInfrastructure.storageAccountName
     location: location
+    keyVaultName: coreInfrastructure.keyVaultName
+    keyVaultResourceGroup: coreInfrastructure.resourceGroup
   }
 }
