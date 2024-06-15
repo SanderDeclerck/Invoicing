@@ -3,6 +3,7 @@ namespace InvoiceService.Data.InvoiceIssuers.Entities;
 public class InvoiceIssuerEntity
 {
     public required Guid Id { get; init; }
+    public required string TenantId { get; init; }
     public required string Name { get; init; }
     public required string StreetAndNumber { get; init; }
     public required string PostalCode { get; init; }

@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using InvoiceService.Data.InvoiceIssuers;
 using InvoiceService.Data.InvoiceNumberSources;
 using InvoiceService.Data.Invoices;
@@ -11,7 +12,7 @@ namespace InvoiceService.Data.Setup;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddInvoiceServiceDataAccess(this IServiceCollection services, string? invoiceCosmosConnectionString)
+    public static IServiceCollection AddInvoiceServiceDataAccess(this IServiceCollection services, string? invoiceCosmosConnectionString, string? blobStorageConnectionString)
     {
         if (string.IsNullOrEmpty(invoiceCosmosConnectionString))
         {
@@ -25,6 +26,13 @@ public static class ServiceCollectionExtensions
                 PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
             }
         }));
+
+        if (string.IsNullOrEmpty(blobStorageConnectionString))
+        {
+            throw new ArgumentException("Blob storage connection string is required", nameof(blobStorageConnectionString));
+        }
+
+        services.AddScoped(provider => new BlobServiceClient(blobStorageConnectionString));
         
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IInvoiceNumberSourceRepository, InvoiceNumberSourceRepository>();

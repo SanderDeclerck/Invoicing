@@ -30,7 +30,7 @@ public class InvoiceIssuerRepository : IInvoiceIssuerRepository
         try
         {
             var tenant = _currentTenantProvider.GetTenantId();
-            var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.tenantId = @tenantId AND c.name = @name")
+            var query = new QueryDefinition("SELECT TOP 1 * FROM c WHERE c.tenantId = @tenantId")
                 .WithParameter("@tenantId", tenant)
                 .WithParameter("@name", name);
 
@@ -47,19 +47,29 @@ public class InvoiceIssuerRepository : IInvoiceIssuerRepository
                     var vatNumber = new VatNumber(entity.VatNumber, entity.VatRegistration);
                     var bankAccount = new BankAccount(entity.BankAccountIban, entity.BankAccountBic);
 
-                    var logoBytes = new byte[0]; // TODO: Load logo from blob storage
+                    var logoBytes = GetLogo(entity.LogoBlobName);
 
                     return new InvoiceIssuer(entity.Id, entity.Name, address, vatNumber, bankAccount, entity.Email, entity.Phone, logoBytes);
                 }
             }
+
+            return null;
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
             return null;
         }
-
-        return null;
     }
 
+    private byte[] GetLogo(string logoBlobName)
+    {
+        var blobClient = BlobContainer.GetBlobClient(logoBlobName);
+        if (!blobClient.Exists())
+        {
+            return Array.Empty<byte>();
+        }
 
+        var response = blobClient.DownloadContent();
+        return response.Value.Content.ToArray();
+    }
 }
