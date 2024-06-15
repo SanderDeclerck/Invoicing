@@ -35,3 +35,7 @@ Content-Type: application/json
 ### finalizeInvoice request
 
 PATCH {{baseUrl}}/sdsoftware/invoices/{{id}}/finalize
+
+### getInvoicePdf request
+
+GET {{baseUrl}}/sdsoftware/invoices/{{id}}/pdf

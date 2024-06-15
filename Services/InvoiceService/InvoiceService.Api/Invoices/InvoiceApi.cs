@@ -17,6 +17,8 @@ public static class InvoiceApi
 
         group.MapPatch("/{id:guid}/finalize", FinalizeInvoice.Handle);
 
+        group.MapGet("/{id:guid}/pdf", RenderInvoicePdf.Handle);
+
         return group;
     }
 }

@@ -1,5 +1,7 @@
+using InvoiceService.Data.InvoiceIssuers;
 using InvoiceService.Data.InvoiceNumberSources;
 using InvoiceService.Data.Invoices;
+using InvoiceService.Domain.InvoiceIssuers.Interfaces;
 using Invoicing.Services.InvoiceService.Domain.InvoiceNumberSources.Invoices;
 using Invoicing.Services.InvoiceService.Domain.Invoices.Interfaces;
 using Microsoft.Azure.Cosmos;
@@ -26,6 +28,7 @@ public static class ServiceCollectionExtensions
         
         services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         services.AddScoped<IInvoiceNumberSourceRepository, InvoiceNumberSourceRepository>();
+        services.AddScoped<IInvoiceIssuerRepository, InvoiceIssuerRepository>();
         
         return services;
     }

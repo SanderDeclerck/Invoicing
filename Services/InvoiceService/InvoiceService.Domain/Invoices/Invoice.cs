@@ -30,6 +30,7 @@ public class Invoice : EntityBase, IAggregateRoot
     public LocalDate? InvoiceDate { get; private set; }
     public Customer Customer { get; }
     public InvoiceLineCollection InvoiceLines { get; } = new InvoiceLineCollection();
+    public string Currency => "EUR";
 
     public bool IsFinalized { get; private set; }
 
