@@ -60,6 +60,11 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/InvoiceServiceCosmosDbConnectionString'
         }
         {
+          name: 'invoiceservicestorageaccountconnectionstring'
+          identity: containerAppUserIdentity.id
+          keyVaultUrl: '${keyVault.properties.vaultUri}secrets/InvoiceServiceStorageAccountConnectionString'
+        }
+        {
           name: 'honeycombapikey'
           identity: containerAppUserIdentity.id
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombApiKey'
@@ -89,7 +94,11 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               name: 'CONNECTIONSTRINGS__INVOICES'
               secretRef: 'invoiceservicecosmosdbconnectionstring'
-            }            
+            }
+            {
+              name: 'CONNECTIONSTRINGS__STORAGEACCOUNT'
+              secretRef: 'invoiceservicestorageaccountconnectionstring'
+            }
             {
               name: 'TELEMETRY__HONEYCOMB__APIKEY'
               secretRef: 'honeycombapikey'

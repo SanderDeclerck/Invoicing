@@ -36,7 +36,9 @@ builder.Services.AddHealthChecks();
 
 builder.AddTelemetry();
 
-builder.Services.AddInvoiceServiceDataAccess(builder.Configuration.GetConnectionString("Invoices"));
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.AddInvoiceServiceDataAccess(builder.Configuration.GetConnectionString("Invoices"), builder.Configuration.GetConnectionString("StorageAccount"));
 
 var app = builder.Build();
 

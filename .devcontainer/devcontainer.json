@@ -33,7 +33,8 @@
 				"ms-dotnettools.vscode-dotnet-runtime",
 				"ms-dotnettools.csdevkit",
 				"ms-dotnetools.csharp",
-				"humao.rest-client"
+				"humao.rest-client",
+				"ms-azuretools.vscode-bicep"
 			]
 		}
 	}
