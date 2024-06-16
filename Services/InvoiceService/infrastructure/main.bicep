@@ -14,16 +14,6 @@ param invoiceServiceInfrastructure object = {
 }
 param imageTag string
 
-module database 'database.bicep' = {
-  name: 'database'
-  params: {
-    name: invoiceServiceInfrastructure.databaseName
-    location: location
-    keyVaultName: coreInfrastructure.keyVaultName
-    keyVaultResourceGroup: coreInfrastructure.resourceGroup
-  }
-}
-
 module containerApp 'containerApp.bicep' = {
   name: 'containerApp'
   params: {
@@ -31,6 +21,20 @@ module containerApp 'containerApp.bicep' = {
     coreInfrastructure: coreInfrastructure
     containerAppName: invoiceServiceInfrastructure.containerAppName
     imageTag: imageTag
+  }
+  dependsOn: [
+    database
+    storageAccount
+  ]
+}
+
+module database 'database.bicep' = {
+  name: 'database'
+  params: {
+    name: invoiceServiceInfrastructure.databaseName
+    location: location
+    keyVaultName: coreInfrastructure.keyVaultName
+    keyVaultResourceGroup: coreInfrastructure.resourceGroup
   }
 }
 

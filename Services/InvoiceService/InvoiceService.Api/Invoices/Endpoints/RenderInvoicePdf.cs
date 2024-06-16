@@ -28,12 +28,8 @@ public static class RenderInvoicePdf
         var invoiceIssuer = await invoiceIssuerRepository.GetByName(tenant, cancellationToken);
         var invoice = await invoiceRepository.GetById(id, cancellationToken);
 
-        if (invoiceIssuer == null)
-        {
-            return TypedResults.NotFound();
-        }
-
-        if (invoice == null)
+        if (invoiceIssuer == null ||
+            invoice == null)
         {
             return TypedResults.NotFound();
         }

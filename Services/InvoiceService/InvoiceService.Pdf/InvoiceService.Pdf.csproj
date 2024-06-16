@@ -15,8 +15,4 @@
     <ProjectReference Include="..\InvoiceService.Domain\InvoiceService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="assets/fonts/*" />
-  </ItemGroup>
-
 </Project>
