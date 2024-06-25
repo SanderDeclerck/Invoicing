@@ -74,6 +74,11 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
           identity: containerAppUserIdentity.id
           keyVaultUrl: '${keyVault.properties.vaultUri}secrets/HoneycombUri'
         }
+        {
+          name: 'auth0authority'
+          identity: containerAppUserIdentity.id
+          keyVaultUrl: '${keyVault.properties.vaultUri}secrets/Auth0Authority'
+        }
       ]
     }
     template: {
@@ -106,6 +111,10 @@ resource containerApp 'Microsoft.App/containerApps@2022-11-01-preview' = {
             {
               name: 'TELEMETRY__HONEYCOMB__URI'
               secretRef: 'honeycomburi'
+            }
+            {
+              name: 'IDENTITY__AUTHORITY'
+              secretRef: 'auth0authority'
             }
           ]
           probes: [
