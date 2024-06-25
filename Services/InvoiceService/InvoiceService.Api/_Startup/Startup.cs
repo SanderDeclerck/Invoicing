@@ -2,6 +2,7 @@ using InvoiceService.Data;
 using InvoiceService.Data.Setup;
 using Invoicing.Services.InvoiceService.Api.Infrastructure;
 using Invoicing.Services.InvoiceService.Api.Invoices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using NodaTime;
@@ -26,10 +27,22 @@ builder.Services.AddScoped<IHttpContextInitialized>(provider => provider.GetRequ
 
 // Register NodaTime
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
-builder.Services.AddSingleton<ZonedClock>(provider => new ZonedClock(provider.GetRequiredService<IClock>(), DateTimeZoneProviders.Tzdb["Europe/Brussels"], CalendarSystem.Iso));
+builder.Services.AddSingleton(provider => new ZonedClock(provider.GetRequiredService<IClock>(), DateTimeZoneProviders.Tzdb["Europe/Brussels"], CalendarSystem.Iso));
 builder.Services.ConfigureHttpJsonOptions(options => {
     options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 });
+
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.Authority = builder.Configuration["Identity:Authority"];
+    options.Audience = "invoice-api";
+});
+
+builder.Services.AddAuthorization();
 
 // Health checks
 builder.Services.AddHealthChecks();
@@ -51,13 +64,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Add middleware for services that need initialization from a middleware
 app.UseMiddleware<InitializeFromHttpContextMiddleware>();
 
 app.MapGroup("/{tenantId:alpha}/invoices")
    .MapInvoiceApi()
    .WithTags("Invoices")
-   .AddEndpointFilter<TracingActionFilter>();
+   .AddEndpointFilter<TracingActionFilter>()
+   .RequireAuthorization();
 
 app.MapHealthChecks("/healthz", new HealthCheckOptions
 {
